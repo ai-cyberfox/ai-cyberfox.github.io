@@ -933,51 +933,62 @@ function Plant() {
   )
 }
 
-// ── Fence ──────────────────────────────────────────────────────
+// ── Fence along island edge ────────────────────────────────────
 function FencePosts() {
-  // Moved closer to center so posts stay on the island (radius 3.6)
-  // Placed along the left-back edge, visible from default camera
-  const posts = [
-    [-2.2, 0.28,  1.0],
-    [-2.5, 0.28,  0.3],
-    [-2.6, 0.28, -0.4],
-    [-2.4, 0.28, -1.0],
-  ]
+  // Arc along the FRONT-LEFT edge of island, visible from default camera
+  // Island radius is 3.6 — place fence at radius ~3.1 so it sits on the island
+  const RADIUS = 3.1
+  const Y = 0.28
+
+  // Arc from ~160° to ~280° (front-left to back-left edge)
+  const NUM_POSTS = 10
+  const START_ANGLE = (160 * Math.PI) / 180
+  const END_ANGLE   = (280 * Math.PI) / 180
+
+  const posts = Array.from({ length: NUM_POSTS }, (_, i) => {
+    const t = i / (NUM_POSTS - 1)
+    const angle = START_ANGLE + t * (END_ANGLE - START_ANGLE)
+    return [
+      Math.cos(angle) * RADIUS,
+      Y,
+      Math.sin(angle) * RADIUS,
+      angle,
+    ]
+  })
+
   return (
     <group>
       {/* Posts */}
-      {posts.map(([x, y, z], i) => (
-        <group key={i} position={[x, y, z]}>
+      {posts.map(([x, y, z, angle], i) => (
+        <group key={i} position={[x, y, z]} rotation={[0, -angle + Math.PI / 2, 0]}>
           <mesh castShadow>
-            <boxGeometry args={[0.07, 0.4, 0.07]} />
-            <meshStandardMaterial color={C.wallDk} roughness={0.75} />  {/* fixed: wallDk not wallDark */}
+            <boxGeometry args={[0.06, 0.44, 0.06]} />
+            <meshStandardMaterial color={C.wallDk} roughness={0.75} />
           </mesh>
-          {/* Pointed cap */}
-          <mesh position={[0, 0.22, 0]}>
-            <coneGeometry args={[0.055, 0.08, 4]} />
-            <meshStandardMaterial color={C.wall} roughness={0.7} />
+          <mesh position={[0, 0.24, 0]}>
+            <coneGeometry args={[0.05, 0.09, 4]} />
+            <meshStandardMaterial color={C.wall} roughness={0.65} />
           </mesh>
         </group>
       ))}
 
-      {/* Rails between posts */}
+      {/* Rails */}
       {posts.slice(0, -1).map(([x, y, z], j) => {
         const [nx, , nz] = posts[j + 1]
         const mx = (x + nx) / 2
         const mz = (z + nz) / 2
         const len = Math.sqrt((nx - x) ** 2 + (nz - z) ** 2)
         const angle = Math.atan2(nz - z, nx - x)
-        return [0.05, 0.14].map((dy, ri) => (
+        return [0.06, 0.18].map((dy, ri) => (
           <mesh key={`${j}-${ri}`} position={[mx, y + dy, mz]} rotation={[0, -angle, 0]}>
-            <boxGeometry args={[len, 0.03, 0.03]} />
-            <meshStandardMaterial color={C.wall} roughness={0.72} />
+            <boxGeometry args={[len, 0.025, 0.025]} />
+            <meshStandardMaterial color={C.wall} roughness={0.7} />
           </mesh>
         ))
       })}
     </group>
   )
 }
-
 
 // ── Main Scene ─────────────────────────────────────────────────────────────
 function FloatingIslandScene({ onSelect }) {
