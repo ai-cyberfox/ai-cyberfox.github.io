@@ -43,7 +43,7 @@ export function useCameraFly() {
 function Island() {
   return (
     <group>
-      <mesh position={[0, 0.18, 0]} receiveShadow>
+      <mesh position={[0, 0.13, 0]} receiveShadow>
         <cylinderGeometry args={[3.6, 3.6, 0.2, 56]} />
         <meshStandardMaterial color={C.islandTop} roughness={0.8} />
       </mesh>
@@ -70,23 +70,22 @@ function Island() {
 // ── 2-wall open room (back + left only, open front + right) ───────────────
 function House() {
   return (
-    <group position={[0.1, 0.27, -0.5]}>
+    <group position={[0.1, 0.38, -0.5]}>
 
       {/* ── Floor ── */}
-      <mesh position={[0, 0.02, 0]} receiveShadow>
-        <boxGeometry args={[2.6, 0.06, 2.6]} />
-        <meshStandardMaterial color="#d8d4cc" roughness={0.8} />
-      </mesh>
+      <RoundedBox args={[2.6, 0.18, 2.6]} radius={0.06} smoothness={4} position={[0, 0.02, 0]} receiveShadow castShadow>
+        <meshStandardMaterial color="#d8d4cc" roughness={0.75} />
+      </RoundedBox>
       {[-0.82, -0.46, -0.1, 0.26, 0.62, 0.98, 1.34].map((z, i) => (
-        <mesh key={i} position={[0, 0.054, z - 0.1]} receiveShadow>
+        <mesh key={i} position={[0, 0.102, z - 0.1]} receiveShadow>
           <boxGeometry args={[2.58, 0.012, 0.3]} />
-          <meshStandardMaterial color={i % 2 === 0 ? '#d4d0c8' : '#ccc8c0'} roughness={0.75} />
+          <meshStandardMaterial color={i % 2 === 0 ? '#d4d0c8' : '#ccc8c0'} roughness={0.7} />
         </mesh>
       ))}
       {[-0.82, -0.46, -0.1, 0.26, 0.62, 0.98].map((z, i) => (
-        <mesh key={i} position={[0, 0.061, z + 0.15]}>
+        <mesh key={i} position={[0, 0.109, z + 0.15]}>
           <boxGeometry args={[2.58, 0.004, 0.008]} />
-          <meshStandardMaterial color="#b8b4ac" roughness={0.9} />
+          <meshStandardMaterial color="#b8b4ac" roughness={0.85} />
         </mesh>
       ))}
 
@@ -348,7 +347,7 @@ function CRTMonitor({ position, rotation = [0,0,0], screenColor, screenContent, 
 // ── Desk Setup (retro reference style) ────────────────────────────────────
 function DeskSetup({ onSelect }) {
   return (
-    <group position={[0.1, 0.27, -0.55]} onClick={(e) => { e.stopPropagation(); onSelect('projects') }}>
+    <group position={[0.1, 0.38, -0.55]} onClick={(e) => { e.stopPropagation(); onSelect('projects') }}>
 
       {/* ── Desk top — ROUNDED ── */}
       <RoundedBox args={[2.0, 0.07, 0.95]} radius={0.025} smoothness={4} position={[0, 0.7, -0.05]} castShadow>
@@ -952,6 +951,91 @@ function Plant() {
   )
 }
 
+// ── Telephone Tower ────────────────────────────────────────────
+function TelephoneTower() {
+  return (
+    <group position={[-0.5, 0.38, -2.8]}>
+      {/* Main vertical pole */}
+      <mesh castShadow>
+        <cylinderGeometry args={[0.04, 0.06, 2.2, 8]} />
+        <meshStandardMaterial color="#888899" roughness={0.6} metalness={0.3} />
+      </mesh>
+
+      {/* Cross arm 1 — top */}
+      <mesh position={[0, 0.9, 0]} castShadow>
+        <boxGeometry args={[0.8, 0.04, 0.04]} />
+        <meshStandardMaterial color="#777788" roughness={0.6} metalness={0.3} />
+      </mesh>
+      {/* Cross arm 2 — middle */}
+      <mesh position={[0, 0.5, 0]} castShadow>
+        <boxGeometry args={[0.6, 0.04, 0.04]} />
+        <meshStandardMaterial color="#777788" roughness={0.6} metalness={0.3} />
+      </mesh>
+      {/* Cross arm 3 — lower */}
+      <mesh position={[0, 0.1, 0]} castShadow>
+        <boxGeometry args={[0.44, 0.04, 0.04]} />
+        <meshStandardMaterial color="#777788" roughness={0.6} metalness={0.3} />
+      </mesh>
+
+      {/* Insulators left — top arm */}
+      {[-0.36, 0, 0.36].map((x, i) => (
+        <mesh key={i} position={[x, 0.92, 0]}>
+          <cylinderGeometry args={[0.022, 0.022, 0.06, 8]} />
+          <meshStandardMaterial color="#cc4422" roughness={0.5} />
+        </mesh>
+      ))}
+      {/* Insulators — middle arm */}
+      {[-0.26, 0, 0.26].map((x, i) => (
+        <mesh key={i} position={[x, 0.52, 0]}>
+          <cylinderGeometry args={[0.018, 0.018, 0.05, 8]} />
+          <meshStandardMaterial color="#cc4422" roughness={0.5} />
+        </mesh>
+      ))}
+      {/* Insulators — lower arm */}
+      {[-0.18, 0, 0.18].map((x, i) => (
+        <mesh key={i} position={[x, 0.12, 0]}>
+          <cylinderGeometry args={[0.015, 0.015, 0.04, 8]} />
+          <meshStandardMaterial color="#cc4422" roughness={0.5} />
+        </mesh>
+      ))}
+
+      {/* Wires top arm */}
+      {[-0.36, 0, 0.36].map((x, i) => (
+        <mesh key={i} position={[x, 0.75, 0]} rotation={[0, 0, 0.08]}>
+          <cylinderGeometry args={[0.006, 0.006, 0.36, 4]} />
+          <meshStandardMaterial color="#444455" roughness={0.8} />
+        </mesh>
+      ))}
+
+      {/* Base plate */}
+      <mesh position={[0, -1.1, 0]} castShadow>
+        <boxGeometry args={[0.28, 0.06, 0.28]} />
+        <meshStandardMaterial color="#666677" roughness={0.7} metalness={0.2} />
+      </mesh>
+
+      {/* Guy wires — diagonal supports */}
+      {[[0.4, 0, 0.4], [-0.4, 0, 0.4], [0.4, 0, -0.4], [-0.4, 0, -0.4]].map(([x,,z], i) => {
+        const len = Math.sqrt(x*x + 0.8*0.8 + z*z)
+        return (
+          <mesh key={i} position={[x/2, 0.4, z/2]}
+            rotation={[Math.atan2(Math.sqrt(x*x+z*z), 0.8), Math.atan2(z, x), 0]}>
+            <cylinderGeometry args={[0.005, 0.005, len * 0.7, 4]} />
+            <meshStandardMaterial color="#555566" roughness={0.8} />
+          </mesh>
+        )
+      })}
+
+      {/* Red warning light on top */}
+      <mesh position={[0, 1.15, 0]}>
+        <sphereGeometry args={[0.035, 8, 8]} />
+        <meshStandardMaterial color="#ff2200" emissive="#ff2200" emissiveIntensity={2} roughness={0.1} />
+      </mesh>
+      <pointLight position={[0, 1.15, 0]} intensity={0.4} color="#ff2200" distance={1.5} decay={2} />
+    </group>
+  )
+}
+
+
 // ── Fence along island edge ────────────────────────────────────
 function FencePosts() {
   // Arc along the FRONT-LEFT edge of island, visible from default camera
@@ -1040,6 +1124,7 @@ function FloatingIslandScene({ onSelect }) {
       <Rocks />
       <Plant />
       <FencePosts />
+      <TelephoneTower />
     </group>
   )
 }
