@@ -605,223 +605,223 @@ function Mailbox({ onSelect }) {
   )
 }
 
-// ── Shared rounded-square keycap tile ─────────────────────────────────────
-// Matches reference: flat tile lying on ground, rounded corners, dark icon raised on top
-function SocialTile({ position, rotation = [0, 0, 0], url, children }) {
-  const base   = '#d8d4e8'   // soft lavender-cream
-  const face   = '#ccc8dc'   // slightly darker top face
-  const corner = 0.048       // corner sphere radius
+// // ── Shared rounded-square keycap tile ─────────────────────────────────────
+// // Matches reference: flat tile lying on ground, rounded corners, dark icon raised on top
+// function SocialTile({ position, rotation = [0, 0, 0], url, children }) {
+//   const base   = '#d8d4e8'   // soft lavender-cream
+//   const face   = '#ccc8dc'   // slightly darker top face
+//   const corner = 0.048       // corner sphere radius
 
-  return (
-    <group
-      position={position}
-      rotation={rotation}
-      onClick={(e) => { e.stopPropagation(); if (url) window.open(url, '_blank') }}
-    >
-      {/* ── MAIN BODY — thick rounded square ── */}
-      <mesh castShadow receiveShadow>
-        <boxGeometry args={[0.32, 0.072, 0.32]} />
-        <meshStandardMaterial color={base} roughness={0.55} />
-      </mesh>
+//   return (
+//     <group
+//       position={position}
+//       rotation={rotation}
+//       onClick={(e) => { e.stopPropagation(); if (url) window.open(url, '_blank') }}
+//     >
+//       {/* ── MAIN BODY — thick rounded square ── */}
+//       <mesh castShadow receiveShadow>
+//         <boxGeometry args={[0.32, 0.072, 0.32]} />
+//         <meshStandardMaterial color={base} roughness={0.55} />
+//       </mesh>
 
-      {/* ── CORNER CYLINDERS — give the true rounded-square look ── */}
-      {[[-0.138,-0.138],[0.138,-0.138],[-0.138,0.138],[0.138,0.138]].map(([x,z],i) => (
-        <mesh key={i} position={[x, 0, z]} castShadow>
-          <cylinderGeometry args={[corner, corner, 0.072, 16]} />
-          <meshStandardMaterial color={base} roughness={0.55} />
-        </mesh>
-      ))}
+//       {/* ── CORNER CYLINDERS — give the true rounded-square look ── */}
+//       {[[-0.138,-0.138],[0.138,-0.138],[-0.138,0.138],[0.138,0.138]].map(([x,z],i) => (
+//         <mesh key={i} position={[x, 0, z]} castShadow>
+//           <cylinderGeometry args={[corner, corner, 0.072, 16]} />
+//           <meshStandardMaterial color={base} roughness={0.55} />
+//         </mesh>
+//       ))}
 
-      {/* ── TOP FACE INSET — slightly recessed panel ── */}
-      <mesh position={[0, 0.038, 0]}>
-        <boxGeometry args={[0.26, 0.008, 0.26]} />
-        <meshStandardMaterial color={face} roughness={0.5} />
-      </mesh>
-      {/* top face corner fills */}
-      {[[-0.11,-0.11],[0.11,-0.11],[-0.11,0.11],[0.11,0.11]].map(([x,z],i) => (
-        <mesh key={i} position={[x, 0.038, z]}>
-          <cylinderGeometry args={[0.02, 0.02, 0.008, 10]} />
-          <meshStandardMaterial color={face} roughness={0.5} />
-        </mesh>
-      ))}
+//       {/* ── TOP FACE INSET — slightly recessed panel ── */}
+//       <mesh position={[0, 0.038, 0]}>
+//         <boxGeometry args={[0.26, 0.008, 0.26]} />
+//         <meshStandardMaterial color={face} roughness={0.5} />
+//       </mesh>
+//       {/* top face corner fills */}
+//       {[[-0.11,-0.11],[0.11,-0.11],[-0.11,0.11],[0.11,0.11]].map(([x,z],i) => (
+//         <mesh key={i} position={[x, 0.038, z]}>
+//           <cylinderGeometry args={[0.02, 0.02, 0.008, 10]} />
+//           <meshStandardMaterial color={face} roughness={0.5} />
+//         </mesh>
+//       ))}
 
-      {/* ── BOTTOM ROUNDED EDGE ── */}
-      {[[-0.138,-0.138],[0.138,-0.138],[-0.138,0.138],[0.138,0.138]].map(([x,z],i) => (
-        <mesh key={`b${i}`} position={[x, -0.036, z]}>
-          <sphereGeometry args={[corner, 10, 10]} />
-          <meshStandardMaterial color={base} roughness={0.55} />
-        </mesh>
-      ))}
+//       {/* ── BOTTOM ROUNDED EDGE ── */}
+//       {[[-0.138,-0.138],[0.138,-0.138],[-0.138,0.138],[0.138,0.138]].map(([x,z],i) => (
+//         <mesh key={`b${i}`} position={[x, -0.036, z]}>
+//           <sphereGeometry args={[corner, 10, 10]} />
+//           <meshStandardMaterial color={base} roughness={0.55} />
+//         </mesh>
+//       ))}
 
-      {/* ── ICON CONTENT (children rendered raised above top face) ── */}
-      <group position={[0, 0.047, 0]}>
-        {children}
-      </group>
-    </group>
-  )
-}
+//       {/* ── ICON CONTENT (children rendered raised above top face) ── */}
+//       <group position={[0, 0.047, 0]}>
+//         {children}
+//       </group>
+//     </group>
+//   )
+// }
 
-// ── GitHub Badge ──────────────────────────────────────────────────────────
-function GithubBadge({ position, rotation }) {
-  const ic = '#2a1a10'
-  return (
-    <SocialTile position={position} rotation={rotation} url="https://github.com">
-      {/* Octocat head circle */}
-      <mesh rotation={[Math.PI/2, 0, 0]}>
-        <cylinderGeometry args={[0.072, 0.072, 0.016, 32]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Left ear */}
-      <mesh position={[-0.048, 0, -0.056]} rotation={[Math.PI/2, 0, -0.18]}>
-        <coneGeometry args={[0.022, 0.044, 4]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Right ear */}
-      <mesh position={[0.048, 0, -0.056]} rotation={[Math.PI/2, 0, 0.18]}>
-        <coneGeometry args={[0.022, 0.044, 4]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Body */}
-      <mesh position={[0, 0, 0.068]} rotation={[Math.PI/2, 0, 0]}>
-        <cylinderGeometry args={[0.048, 0.044, 0.016, 22]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Tail arc */}
-      <mesh position={[0, 0, 0.102]} rotation={[Math.PI/2, 0, 0]}>
-        <torusGeometry args={[0.030, 0.010, 8, 24, Math.PI * 1.25]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Tentacle left */}
-      <mesh position={[-0.048, 0, 0.078]} rotation={[Math.PI/2, 0, 0.3]}>
-        <cylinderGeometry args={[0.009, 0.005, 0.052, 6]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Tentacle right */}
-      <mesh position={[0.048, 0, 0.078]} rotation={[Math.PI/2, 0, -0.3]}>
-        <cylinderGeometry args={[0.009, 0.005, 0.052, 6]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-    </SocialTile>
-  )
-}
+// // ── GitHub Badge ──────────────────────────────────────────────────────────
+// function GithubBadge({ position, rotation }) {
+//   const ic = '#2a1a10'
+//   return (
+//     <SocialTile position={position} rotation={rotation} url="https://github.com">
+//       {/* Octocat head circle */}
+//       <mesh rotation={[Math.PI/2, 0, 0]}>
+//         <cylinderGeometry args={[0.072, 0.072, 0.016, 32]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Left ear */}
+//       <mesh position={[-0.048, 0, -0.056]} rotation={[Math.PI/2, 0, -0.18]}>
+//         <coneGeometry args={[0.022, 0.044, 4]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Right ear */}
+//       <mesh position={[0.048, 0, -0.056]} rotation={[Math.PI/2, 0, 0.18]}>
+//         <coneGeometry args={[0.022, 0.044, 4]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Body */}
+//       <mesh position={[0, 0, 0.068]} rotation={[Math.PI/2, 0, 0]}>
+//         <cylinderGeometry args={[0.048, 0.044, 0.016, 22]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Tail arc */}
+//       <mesh position={[0, 0, 0.102]} rotation={[Math.PI/2, 0, 0]}>
+//         <torusGeometry args={[0.030, 0.010, 8, 24, Math.PI * 1.25]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Tentacle left */}
+//       <mesh position={[-0.048, 0, 0.078]} rotation={[Math.PI/2, 0, 0.3]}>
+//         <cylinderGeometry args={[0.009, 0.005, 0.052, 6]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Tentacle right */}
+//       <mesh position={[0.048, 0, 0.078]} rotation={[Math.PI/2, 0, -0.3]}>
+//         <cylinderGeometry args={[0.009, 0.005, 0.052, 6]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//     </SocialTile>
+//   )
+// }
 
-// ── YouTube Badge ─────────────────────────────────────────────────────────
-function YoutubeBadge({ position, rotation }) {
-  const ic = '#2a1a10'
-  return (
-    <SocialTile position={position} rotation={rotation} url="https://youtube.com">
-      {/* Rounded-rect background for play button */}
-      <mesh rotation={[Math.PI/2, 0, 0]}>
-        <boxGeometry args={[0.14, 0.016, 0.10]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Corner rounding for the rect */}
-      {[[-0.058,-0.038],[0.058,-0.038],[-0.058,0.038],[0.058,0.038]].map(([x,z],i) => (
-        <mesh key={i} position={[x,0,z]} rotation={[Math.PI/2,0,0]}>
-          <cylinderGeometry args={[0.018, 0.018, 0.016, 12]} />
-          <meshStandardMaterial color={ic} roughness={0.4} />
-        </mesh>
-      ))}
-      {/* Play triangle */}
-      <mesh position={[0.007, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
-        <coneGeometry args={[0.028, 0.044, 3]} />
-        <meshStandardMaterial color="#d8d4e8" roughness={0.3} />
-      </mesh>
-    </SocialTile>
-  )
-}
+// // ── YouTube Badge ─────────────────────────────────────────────────────────
+// function YoutubeBadge({ position, rotation }) {
+//   const ic = '#2a1a10'
+//   return (
+//     <SocialTile position={position} rotation={rotation} url="https://youtube.com">
+//       {/* Rounded-rect background for play button */}
+//       <mesh rotation={[Math.PI/2, 0, 0]}>
+//         <boxGeometry args={[0.14, 0.016, 0.10]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Corner rounding for the rect */}
+//       {[[-0.058,-0.038],[0.058,-0.038],[-0.058,0.038],[0.058,0.038]].map(([x,z],i) => (
+//         <mesh key={i} position={[x,0,z]} rotation={[Math.PI/2,0,0]}>
+//           <cylinderGeometry args={[0.018, 0.018, 0.016, 12]} />
+//           <meshStandardMaterial color={ic} roughness={0.4} />
+//         </mesh>
+//       ))}
+//       {/* Play triangle */}
+//       <mesh position={[0.007, 0, 0]} rotation={[Math.PI/2, 0, Math.PI/2]}>
+//         <coneGeometry args={[0.028, 0.044, 3]} />
+//         <meshStandardMaterial color="#d8d4e8" roughness={0.3} />
+//       </mesh>
+//     </SocialTile>
+//   )
+// }
 
-// ── X (Twitter) Badge ─────────────────────────────────────────────────────
-function XBadge({ position, rotation }) {
-  const ic = '#2a1a10'
-  return (
-    <SocialTile position={position} rotation={rotation} url="https://x.com">
-      {/* X — two crossing bars */}
-      <mesh rotation={[Math.PI/2, 0, Math.PI/4]}>
-        <boxGeometry args={[0.145, 0.016, 0.026]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      <mesh rotation={[Math.PI/2, 0, -Math.PI/4]}>
-        <boxGeometry args={[0.145, 0.016, 0.026]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-    </SocialTile>
-  )
-}
+// // ── X (Twitter) Badge ─────────────────────────────────────────────────────
+// function XBadge({ position, rotation }) {
+//   const ic = '#2a1a10'
+//   return (
+//     <SocialTile position={position} rotation={rotation} url="https://x.com">
+//       {/* X — two crossing bars */}
+//       <mesh rotation={[Math.PI/2, 0, Math.PI/4]}>
+//         <boxGeometry args={[0.145, 0.016, 0.026]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       <mesh rotation={[Math.PI/2, 0, -Math.PI/4]}>
+//         <boxGeometry args={[0.145, 0.016, 0.026]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//     </SocialTile>
+//   )
+// }
 
-// ── Instagram Badge ───────────────────────────────────────────────────────
-function InstagramBadge({ position, rotation }) {
-  const ic = '#2a1a10'
-  return (
-    <SocialTile position={position} rotation={rotation} url="https://instagram.com">
-      {/* Outer rounded square ring — use torus with 4 segments */}
-      <mesh rotation={[Math.PI/2, 0, Math.PI/4]}>
-        <torusGeometry args={[0.062, 0.013, 6, 4]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Inner circle */}
-      <mesh rotation={[Math.PI/2, 0, 0]}>
-        <torusGeometry args={[0.032, 0.011, 8, 18]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Dot top-right */}
-      <mesh position={[0.046, 0, -0.046]}>
-        <sphereGeometry args={[0.013, 8, 8]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-    </SocialTile>
-  )
-}
+// // ── Instagram Badge ───────────────────────────────────────────────────────
+// function InstagramBadge({ position, rotation }) {
+//   const ic = '#2a1a10'
+//   return (
+//     <SocialTile position={position} rotation={rotation} url="https://instagram.com">
+//       {/* Outer rounded square ring — use torus with 4 segments */}
+//       <mesh rotation={[Math.PI/2, 0, Math.PI/4]}>
+//         <torusGeometry args={[0.062, 0.013, 6, 4]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Inner circle */}
+//       <mesh rotation={[Math.PI/2, 0, 0]}>
+//         <torusGeometry args={[0.032, 0.011, 8, 18]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Dot top-right */}
+//       <mesh position={[0.046, 0, -0.046]}>
+//         <sphereGeometry args={[0.013, 8, 8]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//     </SocialTile>
+//   )
+// }
 
-// ── LinkedIn Badge ────────────────────────────────────────────────────────
-function LinkedInBadge({ position, rotation }) {
-  const ic = '#2a1a10'
-  return (
-    <SocialTile position={position} rotation={rotation} url="https://linkedin.com">
-      {/* Left stem */}
-      <mesh position={[-0.044, 0, 0.010]} rotation={[Math.PI/2, 0, 0]}>
-        <boxGeometry args={[0.019, 0.016, 0.085]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Left dot */}
-      <mesh position={[-0.044, 0, -0.052]}>
-        <sphereGeometry args={[0.014, 8, 8]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Right stem */}
-      <mesh position={[0.020, 0, 0.012]} rotation={[Math.PI/2, 0, 0]}>
-        <boxGeometry args={[0.019, 0.016, 0.078]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Arch */}
-      <mesh position={[0.048, 0, -0.018]} rotation={[Math.PI/2, 0, 0]}>
-        <torusGeometry args={[0.026, 0.010, 6, 10, Math.PI]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-      {/* Right of arch */}
-      <mesh position={[0.076, 0, 0.012]} rotation={[Math.PI/2, 0, 0]}>
-        <boxGeometry args={[0.019, 0.016, 0.078]} />
-        <meshStandardMaterial color={ic} roughness={0.4} />
-      </mesh>
-    </SocialTile>
-  )
-}
+// // ── LinkedIn Badge ────────────────────────────────────────────────────────
+// function LinkedInBadge({ position, rotation }) {
+//   const ic = '#2a1a10'
+//   return (
+//     <SocialTile position={position} rotation={rotation} url="https://linkedin.com">
+//       {/* Left stem */}
+//       <mesh position={[-0.044, 0, 0.010]} rotation={[Math.PI/2, 0, 0]}>
+//         <boxGeometry args={[0.019, 0.016, 0.085]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Left dot */}
+//       <mesh position={[-0.044, 0, -0.052]}>
+//         <sphereGeometry args={[0.014, 8, 8]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Right stem */}
+//       <mesh position={[0.020, 0, 0.012]} rotation={[Math.PI/2, 0, 0]}>
+//         <boxGeometry args={[0.019, 0.016, 0.078]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Arch */}
+//       <mesh position={[0.048, 0, -0.018]} rotation={[Math.PI/2, 0, 0]}>
+//         <torusGeometry args={[0.026, 0.010, 6, 10, Math.PI]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//       {/* Right of arch */}
+//       <mesh position={[0.076, 0, 0.012]} rotation={[Math.PI/2, 0, 0]}>
+//         <boxGeometry args={[0.019, 0.016, 0.078]} />
+//         <meshStandardMaterial color={ic} roughness={0.4} />
+//       </mesh>
+//     </SocialTile>
+//   )
+// }
 
-// ── All Social Badges placed on island ────────────────────────────────────
-function SocialBadges({ onSelect }) {
-  return (
-    <group position={[0, 0.295, 0]}>
-      {/* Upper row — near steps/wall like reference image */}
-      <GithubBadge    position={[-0.88, 0, 0.32]} rotation={[0,  0.18, 0]} />
-      <YoutubeBadge   position={[-0.46, 0, 0.28]} rotation={[0, -0.10, 0]} />
+// // ── All Social Badges placed on island ────────────────────────────────────
+// function SocialBadges({ onSelect }) {
+//   return (
+//     <group position={[0, 0.295, 0]}>
+//       {/* Upper row — near steps/wall like reference image */}
+//       <GithubBadge    position={[-0.88, 0, 0.32]} rotation={[0,  0.18, 0]} />
+//       <YoutubeBadge   position={[-0.46, 0, 0.28]} rotation={[0, -0.10, 0]} />
 
-      {/* Lower row — scattered on open ground */}
-      <XBadge         position={[ 0.52, 0, 0.82]} rotation={[0,  0.08, 0]} />
-      <InstagramBadge position={[ 0.90, 0, 1.05]} rotation={[0, -0.22, 0]} />
-      <LinkedInBadge  position={[ 1.26, 0, 0.72]} rotation={[0,  0.14, 0]} />
-    </group>
-  )
-}
+//       {/* Lower row — scattered on open ground */}
+//       <XBadge         position={[ 0.52, 0, 0.82]} rotation={[0,  0.08, 0]} />
+//       <InstagramBadge position={[ 0.90, 0, 1.05]} rotation={[0, -0.22, 0]} />
+//       <LinkedInBadge  position={[ 1.26, 0, 0.72]} rotation={[0,  0.14, 0]} />
+//     </group>
+//   )
+// }
 
 
 // ── Welcome Sign ── click → (removed, monitor is about now) ──
@@ -891,20 +891,46 @@ function Rocks() {
 // ── Steps ─────────────────────────────────────────────────────────────────
 function Steps() {
   return (
-    <group position={[0.1, 0.28, 0.82]}>
-      {/* Step 1 — top, flush with room floor, highest */}
-      <RoundedBox args={[1.8, 0.07, 0.34]} radius={0.02} smoothness={4}
-        position={[0, 0.14, 0]} castShadow>
+    <group position={[0.1, 0.21, 1.1]}>
+      {/* Step 1 */}
+      <RoundedBox args={[0.38, 0.07, 0.38]} radius={0.02} smoothness={4}
+        position={[-0.5, 0.07, 0]} castShadow>
         <meshStandardMaterial color={C.accent} roughness={0.6} />
       </RoundedBox>
-      {/* Step 2 — middle */}
-      <RoundedBox args={[1.8, 0.07, 0.34]} radius={0.02} smoothness={4}
-        position={[0, 0.07, 0.34]} castShadow>
+      <RoundedBox args={[0.38, 0.07, 0.38]} radius={0.02} smoothness={4}
+        position={[0, 0.07, 0]} castShadow>
         <meshStandardMaterial color={C.wallDk} roughness={0.6} />
       </RoundedBox>
-      {/* Step 3 — ground level */}
-      <RoundedBox args={[1.8, 0.07, 0.34]} radius={0.02} smoothness={4}
-        position={[0, 0.0, 0.68]} castShadow>
+      <RoundedBox args={[0.38, 0.07, 0.38]} radius={0.02} smoothness={4}
+        position={[0.5, 0.07, 0]} castShadow>
+        <meshStandardMaterial color={C.accent} roughness={0.6} />
+      </RoundedBox>
+
+      {/* Step 2 — gap */}
+      <RoundedBox args={[0.38, 0.07, 0.38]} radius={0.02} smoothness={4}
+        position={[-0.5, 0.07, 0.52]} castShadow>
+        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+      </RoundedBox>
+      <RoundedBox args={[0.38, 0.07, 0.38]} radius={0.02} smoothness={4}
+        position={[0, 0.07, 0.52]} castShadow>
+        <meshStandardMaterial color={C.accent} roughness={0.6} />
+      </RoundedBox>
+      <RoundedBox args={[0.38, 0.07, 0.38]} radius={0.02} smoothness={4}
+        position={[0.5, 0.07, 0.52]} castShadow>
+        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+      </RoundedBox>
+
+      {/* Step 3 — gap */}
+      <RoundedBox args={[0.38, 0.07, 0.38]} radius={0.02} smoothness={4}
+        position={[-0.5, 0.07, 1.04]} castShadow>
+        <meshStandardMaterial color={C.accent} roughness={0.6} />
+      </RoundedBox>
+      <RoundedBox args={[0.38, 0.07, 0.38]} radius={0.02} smoothness={4}
+        position={[0, 0.07, 1.04]} castShadow>
+        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+      </RoundedBox>
+      <RoundedBox args={[0.38, 0.07, 0.38]} radius={0.02} smoothness={4}
+        position={[0.5, 0.07, 1.04]} castShadow>
         <meshStandardMaterial color={C.accent} roughness={0.6} />
       </RoundedBox>
     </group>
@@ -1007,7 +1033,7 @@ function FloatingIslandScene({ onSelect }) {
       <Mailbox onSelect={onSelect} />
       {/* <WelcomeSign onSelect={onSelect} /> */}
       <ProjectCanvas onSelect={onSelect} />
-      <SocialBadges onSelect={onSelect} />
+      {/* <SocialBadges onSelect={onSelect} /> */}
       {/* <SmallPlant position={[-2.4, 0.28, -1.8]} />
       <SmallPlant position={[ 2.6, 0.28, -0.6]} />
       <SmallPlant position={[-1.2, 0.28,  2.2]} /> */}
