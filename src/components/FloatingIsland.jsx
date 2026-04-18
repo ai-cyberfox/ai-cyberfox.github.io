@@ -74,16 +74,16 @@ function House() {
 
       {/* ── Floor ── */}
       <mesh position={[0, 0.02, 0]} receiveShadow>
-        <boxGeometry args={[2.6, 0.06, 2.0]} />
+        <boxGeometry args={[2.6, 0.06, 2.6]} />
         <meshStandardMaterial color="#d8d4cc" roughness={0.8} />
       </mesh>
-      {[-0.82, -0.46, -0.1, 0.26, 0.62, 0.98].map((z, i) => (
+      {[-0.82, -0.46, -0.1, 0.26, 0.62, 0.98, 1.34].map((z, i) => (
         <mesh key={i} position={[0, 0.054, z - 0.1]} receiveShadow>
           <boxGeometry args={[2.58, 0.012, 0.3]} />
           <meshStandardMaterial color={i % 2 === 0 ? '#d4d0c8' : '#ccc8c0'} roughness={0.75} />
         </mesh>
       ))}
-      {[-0.82, -0.46, -0.1, 0.26, 0.62].map((z, i) => (
+      {[-0.82, -0.46, -0.1, 0.26, 0.62, 0.98].map((z, i) => (
         <mesh key={i} position={[0, 0.061, z + 0.15]}>
           <boxGeometry args={[2.58, 0.004, 0.008]} />
           <meshStandardMaterial color="#b8b4ac" roughness={0.9} />
@@ -100,7 +100,7 @@ function House() {
       </mesh>
 
       {/* ── Left wall — ROUNDED ── */}
-      <RoundedBox args={[0.1, 2.0, 1.9]} radius={0.04} smoothness={4} position={[-1.25, 1.0, -0.06]} castShadow>
+      <RoundedBox args={[0.1, 2.0, 2.5]} radius={0.04} smoothness={4} position={[-1.25, 1.0, 0.25]} castShadow>
         <meshStandardMaterial color={C.wallDk} roughness={0.65} />
       </RoundedBox>
 
@@ -182,8 +182,8 @@ function House() {
         <boxGeometry args={[2.58, 0.14, 0.04]} />
         <meshStandardMaterial color={C.wallDk} roughness={0.7} />
       </mesh>
-      <mesh position={[-1.2, 0.1, -0.06]}>
-        <boxGeometry args={[0.04, 0.14, 1.84]} />
+      <mesh position={[-1.2, 0.1, 0.25]}>
+        <boxGeometry args={[0.04, 0.14, 2.5]} /> 
         <meshStandardMaterial color={C.wallDk} roughness={0.7} />
       </mesh>
 
@@ -891,9 +891,22 @@ function Rocks() {
 // ── Steps ─────────────────────────────────────────────────────────────────
 function Steps() {
   return (
-    <group position={[0.1, 0.25, 0.42]}>
-      <mesh position={[0, 0, -0.08]}><boxGeometry args={[1.6, 0.06, 0.52]} /><meshStandardMaterial color={C.accent} roughness={0.8} /></mesh>
-      <mesh position={[0, -0.06, 0.22]}><boxGeometry args={[1.6, 0.06, 0.52]} /><meshStandardMaterial color={C.wallDk} roughness={0.8} /></mesh>
+    <group position={[0.1, 0.28, 0.82]}>
+      {/* Step 1 — top, flush with room floor, highest */}
+      <RoundedBox args={[1.8, 0.07, 0.34]} radius={0.02} smoothness={4}
+        position={[0, 0.14, 0]} castShadow>
+        <meshStandardMaterial color={C.accent} roughness={0.6} />
+      </RoundedBox>
+      {/* Step 2 — middle */}
+      <RoundedBox args={[1.8, 0.07, 0.34]} radius={0.02} smoothness={4}
+        position={[0, 0.07, 0.34]} castShadow>
+        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
+      </RoundedBox>
+      {/* Step 3 — ground level */}
+      <RoundedBox args={[1.8, 0.07, 0.34]} radius={0.02} smoothness={4}
+        position={[0, 0.0, 0.68]} castShadow>
+        <meshStandardMaterial color={C.accent} roughness={0.6} />
+      </RoundedBox>
     </group>
   )
 }
