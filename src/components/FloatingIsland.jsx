@@ -472,14 +472,14 @@ function DeskSetup({ onSelect }) {
 
 
 // ── Tree ──────────────────────────────────────────────────────
-function Tree() {
+function Tree({ position = [1.85,0.28,-1.25] }) {
   const clusters = useMemo(() => [
     [0,1.6,0,0.72],[-0.42,1.38,0.24,0.56],[0.38,1.28,-0.22,0.52],
     [-0.22,1.78,-0.32,0.47],[0.32,1.68,0.34,0.44],[-0.52,1.08,-0.12,0.42],
     [0.12,1.12,0.46,0.4],[0.5,1.5,0.18,0.38],[-0.18,1.22,0.5,0.35],
   ], [])
   return (
-    <group position={[1.85,0.28,-1.25]}>
+    <group position={position}>
       <mesh castShadow><cylinderGeometry args={[0.1,0.15,1.25,10]} /><meshStandardMaterial color={C.wood} roughness={0.92} /></mesh>
       {[0.2,0.5,0.8].map((y,i) => (
         <mesh key={i} position={[0,y,0]}>
@@ -825,24 +825,24 @@ function SocialBadges({ onSelect }) {
 
 
 // ── Welcome Sign ── click → (removed, monitor is about now) ──
-function WelcomeSign() {
-  return (
-    <group position={[-0.5,0.32,1.55]} rotation={[0,-0.2,0]}>
-      {[-0.4,0.4].map((x,i) => (
-        <mesh key={i} position={[x,-0.22,0]}><boxGeometry args={[0.06,0.26,0.06]} /><meshStandardMaterial color={C.wood} roughness={0.82} /></mesh>
-      ))}
-      <mesh castShadow><boxGeometry args={[1.04,0.32,0.07]} /><meshStandardMaterial color={C.wood} roughness={0.78} /></mesh>
-      <mesh position={[0,0,0.042]}><boxGeometry args={[0.96,0.24,0.01]} /><meshStandardMaterial color={C.dark} roughness={0.3} /></mesh>
-      {[-0.04,0.04].map((dy,i) => (
-        <mesh key={i} position={[0,dy,0.052]}><boxGeometry args={[0.72,0.025,0.005]} /><meshStandardMaterial color={C.terminal} emissive={C.terminal} emissiveIntensity={1.6} /></mesh>
-      ))}
-      {[-0.32,0.32].map((x,i) => (
-        <mesh key={i} position={[x,0,0.052]}><boxGeometry args={[0.04,0.04,0.005]} /><meshStandardMaterial color={C.terminal} emissive={C.terminal} emissiveIntensity={1.2} /></mesh>
-      ))}
-      <pointLight position={[0,0.1,0.3]} intensity={0.35} color={C.terminal} distance={1.2} decay={2} />
-    </group>
-  )
-}
+// function WelcomeSign() {
+//   return (
+//     <group position={[-0.5,0.32,1.55]} rotation={[0,-0.2,0]}>
+//       {[-0.4,0.4].map((x,i) => (
+//         <mesh key={i} position={[x,-0.22,0]}><boxGeometry args={[0.06,0.26,0.06]} /><meshStandardMaterial color={C.wood} roughness={0.82} /></mesh>
+//       ))}
+//       <mesh castShadow><boxGeometry args={[1.04,0.32,0.07]} /><meshStandardMaterial color={C.wood} roughness={0.78} /></mesh>
+//       <mesh position={[0,0,0.042]}><boxGeometry args={[0.96,0.24,0.01]} /><meshStandardMaterial color={C.dark} roughness={0.3} /></mesh>
+//       {[-0.04,0.04].map((dy,i) => (
+//         <mesh key={i} position={[0,dy,0.052]}><boxGeometry args={[0.72,0.025,0.005]} /><meshStandardMaterial color={C.terminal} emissive={C.terminal} emissiveIntensity={1.6} /></mesh>
+//       ))}
+//       {[-0.32,0.32].map((x,i) => (
+//         <mesh key={i} position={[x,0,0.052]}><boxGeometry args={[0.04,0.04,0.005]} /><meshStandardMaterial color={C.terminal} emissive={C.terminal} emissiveIntensity={1.2} /></mesh>
+//       ))}
+//       <pointLight position={[0,0.1,0.3]} intensity={0.35} color={C.terminal} distance={1.2} decay={2} />
+//     </group>
+//   )
+// }
 
 // ── Skills Easel ───────────────────────────────────────────────────────────
 function ProjectCanvas({ onSelect }) {
@@ -871,33 +871,13 @@ function ProjectCanvas({ onSelect }) {
   )
 }
 
-// ── Small potted plants ────────────────────────────────────────────────────
-// function SmallPlant({ position }) {
-//   return (
-//     <group position={position}>
-//       <mesh castShadow>
-//         <cylinderGeometry args={[0.065, 0.075, 0.09, 10]} />
-//         <meshStandardMaterial color="#c07040" roughness={0.8} />
-//       </mesh>
-//       <mesh position={[0, 0.048, 0]}>
-//         <cylinderGeometry args={[0.062, 0.062, 0.01, 10]} />
-//         <meshStandardMaterial color="#4a3020" roughness={1} />
-//       </mesh>
-//       {[0,1,2].map(i => (
-//         <mesh key={i} position={[Math.sin(i*2.09)*0.065, 0.14+i*0.02, Math.cos(i*2.09)*0.065]}>
-//           <sphereGeometry args={[0.075, 6, 5]} />
-//           <meshStandardMaterial color={C.island} roughness={1} flatShading />
-//         </mesh>
-//       ))}
-//     </group>
-//   )
-// }
+
 
 // ── Rocks ─────────────────────────────────────────────────────────────────
 function Rocks() {
   return (
     <group>
-      {[[-2.6,0.28,-1.1,0.12],[ 2.9,0.28, 0.8,0.09],[-1.8,0.28, 1.8,0.08],
+      {[[-1.8,0.28, 1.8,0.08],
         [ 2.2,0.28,-2.0,0.07],[-0.5,0.28, 2.9,0.1],[ 2.8,0.28,-1.5,0.07]].map(([x,y,z,r],i) => (
         <mesh key={i} position={[x,y,z]} castShadow>
           <sphereGeometry args={[r,6,5]} />
@@ -1007,12 +987,12 @@ function FloatingIslandScene({ onSelect }) {
       <Steps />
       <DeskSetup onSelect={onSelect} />
       {/* Chair REMOVED as requested */}
-      <Tree position={[2.8, 0.28, -0.6]} />
+      <Tree position={[2.5, 0.28, -1.8]} />
       {/* <Tree position={[-1.5, 0.28, -1.9]} /> */}
       <Lantern position={[-1.7, 0.28, -0.5]} />
       <Campfire position={[1.75, 0.28, 1.75]} />
       <Mailbox onSelect={onSelect} />
-      <WelcomeSign onSelect={onSelect} />
+      {/* <WelcomeSign onSelect={onSelect} /> */}
       <ProjectCanvas onSelect={onSelect} />
       <SocialBadges onSelect={onSelect} />
       {/* <SmallPlant position={[-2.4, 0.28, -1.8]} />
