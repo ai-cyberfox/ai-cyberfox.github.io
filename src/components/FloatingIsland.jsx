@@ -1110,6 +1110,47 @@ function Steps() {
   )
 }
 
+
+// ── Plant ─────────────────────────────────────────────────────
+function Plant() {
+  return (
+    <group position={[-2.3,0.28,-0.9]}>
+      <mesh castShadow><cylinderGeometry args={[0.1,0.07,0.16,10]} /><meshStandardMaterial color={C.stone} roughness={0.72} /></mesh>
+      <mesh position={[0,0.09,0]}><cylinderGeometry args={[0.096,0.096,0.03,10]} /><meshStandardMaterial color="#3a2810" roughness={0.95} /></mesh>
+      <mesh position={[0,0.24,0]}><cylinderGeometry args={[0.016,0.016,0.22,6]} /><meshStandardMaterial color="#5a8a2a" roughness={0.85} /></mesh>
+      {[[0,0.35,0,0.14],[0.08,0.32,0.06,0.11],[-0.08,0.34,-0.05,0.1],[0.04,0.38,-0.07,0.09]].map(([x,y,z,r],i) => (
+        <mesh key={i} position={[x,y,z]}><sphereGeometry args={[r,7,6]} /><meshStandardMaterial color={C.leafMid} roughness={0.9} flatShading /></mesh>
+      ))}
+    </group>
+  )
+}
+
+// ── Fence ─────────────────────────────────────────────────────
+function FencePosts() {
+  const posts=[[-2.8,0.28,1.2],[-3.0,0.28,0.4],[-3.1,0.28,-0.4],[-2.9,0.28,-1.1]]
+  return (
+    <group>
+      {posts.map(([x,y,z],i) => (
+        <group key={i} position={[x,y,z]}>
+          <mesh castShadow><boxGeometry args={[0.07,0.4,0.07]} /><meshStandardMaterial color={C.wallDark} roughness={0.75} /></mesh>
+          <mesh position={[0,0.22,0]}><coneGeometry args={[0.055,0.08,4]} /><meshStandardMaterial color={C.wall} roughness={0.7} /></mesh>
+        </group>
+      ))}
+      {posts.slice(0,-1).map(([x,y,z],j) => {
+        const [nx,,nz]=posts[j+1], mx=(x+nx)/2, mz=(z+nz)/2
+        const len=Math.sqrt((nx-x)**2+(nz-z)**2), angle=Math.atan2(nz-z,nx-x)
+        return [0.05,0.14].map((dy,ri) => (
+          <mesh key={`${j}-${ri}`} position={[mx,y+dy,mz]} rotation={[0,-angle,0]}>
+            <boxGeometry args={[len,0.03,0.03]} />
+            <meshStandardMaterial color={C.wall} roughness={0.72} />
+          </mesh>
+        ))
+      })}
+    </group>
+  )
+}
+
+
 // ── Main Scene ─────────────────────────────────────────────────────────────
 function FloatingIslandScene({ onSelect }) {
   const groupRef = useRef()
