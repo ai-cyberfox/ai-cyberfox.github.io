@@ -470,151 +470,37 @@ function DeskSetup({ onSelect }) {
 }
 
 
-// ── LOW-POLY FLAT LEAF (hexagonal disc shape) ─────────────────────────────
-function FlatLeaf({ position, rotation, scaleX = 1, scaleZ = 1 }) {
+
+// ── Tree ──────────────────────────────────────────────────────
+function Tree() {
+  const clusters = useMemo(() => [
+    [0,1.6,0,0.72],[-0.42,1.38,0.24,0.56],[0.38,1.28,-0.22,0.52],
+    [-0.22,1.78,-0.32,0.47],[0.32,1.68,0.34,0.44],[-0.52,1.08,-0.12,0.42],
+    [0.12,1.12,0.46,0.4],[0.5,1.5,0.18,0.38],[-0.18,1.22,0.5,0.35],
+  ], [])
   return (
-    <mesh
-      position={position}
-      rotation={rotation}
-      scale={[scaleX, 0.18, scaleZ]}
-      castShadow
-    >
-      <cylinderGeometry args={[0.32, 0.28, 1, 6]} />
-      <meshStandardMaterial color={C.island} roughness={1.0} flatShading />
-    </mesh>
-  )
-}
-
-// ── BRANCH SEGMENT ────────────────────────────────────────────────────────
-function Branch({ start, end, rBot = 0.08, rTop = 0.05 }) {
-  const s = new THREE.Vector3(...start)
-  const e = new THREE.Vector3(...end)
-  const dir = e.clone().sub(s)
-  const len = dir.length()
-  const mid = s.clone().lerp(e, 0.5)
-  const quat = new THREE.Quaternion().setFromUnitVectors(
-    new THREE.Vector3(0, 1, 0),
-    dir.normalize()
-  )
-  const euler = new THREE.Euler().setFromQuaternion(quat)
-  return (
-    <mesh position={[mid.x, mid.y, mid.z]} rotation={[euler.x, euler.y, euler.z]} castShadow>
-      <cylinderGeometry args={[rTop, rBot, len, 7]} />
-      <meshStandardMaterial color={C.wood} roughness={0.85} />
-    </mesh>
-  )
-}
-
-// ── MAIN TREE — single tree, right of building, slight lean toward room ───
-function Tree({ position = [2.0, 0.28, -1.3] }) {
-  return (
-    <group position={position} rotation={[0, 0.3, -0.08]}>
-      {/* ── TRUNK: thick baobab segments with ring seams ── */}
-      {/* Base — widest, very chunky */}
-      <mesh position={[0, 0.30, 0]} castShadow>
-        <cylinderGeometry args={[0.22, 0.32, 0.60, 8]} />
-        <meshStandardMaterial color={C.wood} roughness={0.85} />
+    <group position={[1.85,0.28,-1.25]}>
+      <mesh castShadow><cylinderGeometry args={[0.1,0.15,1.25,10]} /><meshStandardMaterial color={C.wood} roughness={0.92} /></mesh>
+      {[0.2,0.5,0.8].map((y,i) => (
+        <mesh key={i} position={[0,y,0]}>
+          <torusGeometry args={[0.115-y*0.02,0.012,4,12]} />
+          <meshStandardMaterial color={C.woodDark} roughness={0.95} />
+        </mesh>
+      ))}
+      <mesh position={[-0.25,0.72,0.1]} rotation={[0.2,0,0.55]} castShadow>
+        <cylinderGeometry args={[0.04,0.07,0.72,8]} />
+        <meshStandardMaterial color={C.wood} roughness={0.92} />
       </mesh>
-      {/* Lower mid */}
-      <mesh position={[0, 0.75, 0]} castShadow>
-        <cylinderGeometry args={[0.20, 0.22, 0.50, 8]} />
-        <meshStandardMaterial color={C.wood} roughness={0.85} />
-      </mesh>
-      {/* Mid bulge */}
-      <mesh position={[0, 1.15, 0]} castShadow>
-        <cylinderGeometry args={[0.23, 0.20, 0.45, 8]} />
-        <meshStandardMaterial color={C.wood} roughness={0.85} />
-      </mesh>
-      {/* Upper — narrows */}
-      <mesh position={[0, 1.52, 0]} castShadow>
-        <cylinderGeometry args={[0.17, 0.23, 0.42, 8]} />
-        <meshStandardMaterial color={C.wood} roughness={0.85} />
-      </mesh>
-      {/* Neck — before fork */}
-      <mesh position={[0, 1.82, 0]} castShadow>
-        <cylinderGeometry args={[0.11, 0.17, 0.36, 7]} />
-        <meshStandardMaterial color={C.wood} roughness={0.85} />
-      </mesh>
-      {/* Fork junction sphere */}
-      <mesh position={[0, 2.02, 0]} castShadow>
-        <sphereGeometry args={[0.14, 7, 5]} />
-        <meshStandardMaterial color={C.wood} roughness={0.85} />
-      </mesh>
-
-      {/* ── MAIN BRANCHES — 4 arms spreading outward ── */}
-      {/* Branch LEFT — sweeps far left-back */}
-      <Branch start={[0, 2.02, 0]}        end={[-0.65, 2.58, -0.30]} rBot={0.10} rTop={0.07} />
-      <Branch start={[-0.65, 2.58, -0.30]} end={[-1.20, 2.90, -0.10]} rBot={0.07} rTop={0.05} />
-      <Branch start={[-1.20, 2.90, -0.10]} end={[-1.68, 3.05,  0.20]} rBot={0.05} rTop={0.03} />
-
-      {/* Branch RIGHT — sweeps far right-forward */}
-      <Branch start={[0, 2.02, 0]}       end={[0.62, 2.55,  0.28]} rBot={0.10} rTop={0.07} />
-      <Branch start={[0.62, 2.55, 0.28]} end={[1.18, 2.88,  0.08]} rBot={0.07} rTop={0.05} />
-      <Branch start={[1.18, 2.88, 0.08]} end={[1.65, 3.02, -0.18]} rBot={0.05} rTop={0.03} />
-
-      {/* Branch BACK-LEFT — goes up-back */}
-      <Branch start={[0, 2.02, 0]}         end={[-0.30, 2.60, -0.62]} rBot={0.09} rTop={0.06} />
-      <Branch start={[-0.30, 2.60, -0.62]} end={[-0.20, 2.95, -1.10]} rBot={0.06} rTop={0.04} />
-      <Branch start={[-0.20, 2.95, -1.10]} end={[ 0.10, 3.08, -1.50]} rBot={0.04} rTop={0.02} />
-
-      {/* Branch FRONT-RIGHT — goes up-forward */}
-      <Branch start={[0, 2.02, 0]}        end={[0.28, 2.58,  0.60]} rBot={0.09} rTop={0.06} />
-      <Branch start={[0.28, 2.58, 0.60]}  end={[0.15, 2.92,  1.08]} rBot={0.06} rTop={0.04} />
-      <Branch start={[0.15, 2.92, 1.08]}  end={[-0.15, 3.05, 1.45]} rBot={0.04} rTop={0.02} />
-
-      {/* ── TWIGS off main branches ── */}
-      <Branch start={[-0.65, 2.58, -0.30]} end={[-0.80, 2.95,  0.28]} rBot={0.04} rTop={0.02} />
-      <Branch start={[-1.20, 2.90, -0.10]} end={[-1.05, 3.18, -0.55]} rBot={0.04} rTop={0.02} />
-      <Branch start={[ 0.62, 2.55,  0.28]} end={[ 0.75, 2.92, -0.28]} rBot={0.04} rTop={0.02} />
-      <Branch start={[ 1.18, 2.88,  0.08]} end={[ 1.02, 3.16,  0.52]} rBot={0.04} rTop={0.02} />
-      <Branch start={[-0.30, 2.60, -0.62]} end={[ 0.18, 2.90, -0.70]} rBot={0.03} rTop={0.02} />
-      <Branch start={[ 0.28, 2.58,  0.60]} end={[-0.18, 2.88,  0.72]} rBot={0.03} rTop={0.02} />
-
-      {/* ══ FLAT HEX LEAVES — scattered at all branch/twig ends ══ */}
-
-      {/* LEFT arm leaves */}
-      <FlatLeaf position={[-1.68, 3.10,  0.20]} rotation={[0.20, 0.5, 0.15]}  scaleX={1.1} scaleZ={0.9} />
-      <FlatLeaf position={[-1.50, 3.05, -0.10]} rotation={[-0.15, 1.2, 0.10]} scaleX={0.9} scaleZ={1.0} />
-      <FlatLeaf position={[-1.35, 3.18,  0.40]} rotation={[0.25, 0.8, -0.12]} scaleX={1.0} scaleZ={0.85} />
-      <FlatLeaf position={[-1.15, 2.98, -0.52]} rotation={[-0.20, 2.0, 0.18]} scaleX={1.0} scaleZ={0.9} />
-      <FlatLeaf position={[-0.85, 3.00,  0.35]} rotation={[0.18, 0.3, 0.08]}  scaleX={0.9} scaleZ={0.85} />
-      <FlatLeaf position={[-0.92, 3.22, -0.40]} rotation={[0.22, 1.5, -0.15]} scaleX={0.85} scaleZ={0.90} />
-      <FlatLeaf position={[-1.55, 2.88,  0.55]} rotation={[0.30, 0.2, 0.20]}  scaleX={0.80} scaleZ={0.75} />
-      <FlatLeaf position={[-1.78, 3.00, -0.30]} rotation={[-0.10, 1.8, 0.12]} scaleX={0.95} scaleZ={0.80} />
-
-      {/* RIGHT arm leaves */}
-      <FlatLeaf position={[1.65, 3.08, -0.18]}  rotation={[0.18, -0.5, -0.12]} scaleX={1.1} scaleZ={0.9} />
-      <FlatLeaf position={[1.48, 3.02,  0.14]}  rotation={[-0.12, -1.2, 0.10]} scaleX={0.9} scaleZ={1.0} />
-      <FlatLeaf position={[1.32, 3.20, -0.40]}  rotation={[0.22, -0.8, 0.14]}  scaleX={1.0} scaleZ={0.85} />
-      <FlatLeaf position={[1.12, 2.96,  0.50]}  rotation={[-0.18, -2.0, -0.18]} scaleX={1.0} scaleZ={0.9} />
-      <FlatLeaf position={[0.82, 3.02, -0.32]}  rotation={[0.15, -0.3, -0.08]}  scaleX={0.9} scaleZ={0.85} />
-      <FlatLeaf position={[0.90, 3.24,  0.42]}  rotation={[0.20, -1.5, 0.16]}   scaleX={0.85} scaleZ={0.9} />
-      <FlatLeaf position={[1.50, 2.85, -0.52]}  rotation={[0.28, -0.2, -0.18]}  scaleX={0.8} scaleZ={0.75} />
-      <FlatLeaf position={[1.72, 2.98,  0.28]}  rotation={[-0.08, -1.8, -0.12]} scaleX={0.95} scaleZ={0.8} />
-
-      {/* BACK-LEFT arm leaves */}
-      <FlatLeaf position={[0.10, 3.14, -1.50]}  rotation={[0.30, 0.1, 0.08]}   scaleX={1.0} scaleZ={0.9} />
-      <FlatLeaf position={[-0.25, 3.05, -1.32]} rotation={[-0.15, 0.9, -0.10]} scaleX={0.9} scaleZ={0.85} />
-      <FlatLeaf position={[0.32, 3.00, -1.20]}  rotation={[0.20, 1.6, 0.15]}   scaleX={0.85} scaleZ={0.9} />
-      <FlatLeaf position={[-0.15, 3.22, -1.00]} rotation={[0.25, 0.4, -0.12]}  scaleX={0.9} scaleZ={0.8} />
-      <FlatLeaf position={[0.18, 2.88, -0.82]}  rotation={[-0.10, 2.2, 0.18]}  scaleX={0.8} scaleZ={0.75} />
-      <FlatLeaf position={[0.22, 3.10, -0.68]}  rotation={[0.15, 0.7, 0.10]}   scaleX={0.75} scaleZ={0.8} />
-
-      {/* FRONT-RIGHT arm leaves */}
-      <FlatLeaf position={[-0.15, 3.12,  1.45]} rotation={[0.28, -0.1, -0.08]}  scaleX={1.0} scaleZ={0.9} />
-      <FlatLeaf position={[0.22, 3.02,  1.28]}  rotation={[-0.12, -0.9, 0.10]}  scaleX={0.9} scaleZ={0.85} />
-      <FlatLeaf position={[-0.35, 2.98,  1.18]} rotation={[0.18, -1.6, -0.15]}  scaleX={0.85} scaleZ={0.9} />
-      <FlatLeaf position={[0.12, 3.20,  0.98]}  rotation={[0.22, -0.4, 0.12]}   scaleX={0.9} scaleZ={0.8} />
-      <FlatLeaf position={[-0.20, 2.86,  0.80]} rotation={[-0.10, -2.2, -0.18]} scaleX={0.8} scaleZ={0.75} />
-      <FlatLeaf position={[-0.25, 3.08,  0.65]} rotation={[0.15, -0.7, -0.10]}  scaleX={0.75} scaleZ={0.8} />
-
-      {/* CENTER / fill leaves near fork */}
-      <FlatLeaf position={[-0.40, 2.75, -0.20]} rotation={[0.12, 0.6, 0.08]}   scaleX={0.85} scaleZ={0.80} />
-      <FlatLeaf position={[ 0.38, 2.78,  0.18]} rotation={[0.10, -0.6, -0.08]} scaleX={0.85} scaleZ={0.80} />
-      <FlatLeaf position={[-0.15, 2.72,  0.35]} rotation={[0.15, 1.2, 0.10]}   scaleX={0.80} scaleZ={0.75} />
-      <FlatLeaf position={[ 0.15, 2.74, -0.32]} rotation={[0.12, -1.2, -0.10]} scaleX={0.80} scaleZ={0.75} />
-      <FlatLeaf position={[-0.55, 2.82,  0.50]} rotation={[0.20, 0.9, 0.12]}   scaleX={0.78} scaleZ={0.72} />
-      <FlatLeaf position={[ 0.52, 2.80, -0.48]} rotation={[0.18, -0.9, -0.12]} scaleX={0.78} scaleZ={0.72} />
+      {[0,1,2,3].map(i => {
+        const a=(i/4)*Math.PI*2
+        return <mesh key={i} position={[Math.cos(a)*0.14,-0.55,Math.sin(a)*0.14]} rotation={[0,a,0.4]}><boxGeometry args={[0.06,0.08,0.22]} /><meshStandardMaterial color={C.woodDark} roughness={0.95} /></mesh>
+      })}
+      {clusters.map(([x,y,z,r],i) => (
+        <mesh key={i} position={[x,y,z]} castShadow>
+          <sphereGeometry args={[r,8,6]} />
+          <meshStandardMaterial color={i%3===0?C.leaf:i%3===1?C.leafMid:C.island} roughness={1.0} flatShading />
+        </mesh>
+      ))}
     </group>
   )
 }
@@ -696,63 +582,28 @@ function Campfire({ position = [0.0, 0.28, 0.95] }) {
 
 
 
-// ── Mailbox — dome capsule shape on disc base ─────────────────────────────
+// ── Mailbox ── click → contact ────────────────────────────────
 function Mailbox({ onSelect }) {
   return (
     <group
-      position={[-2.2, 0.28, 0.5]}
-      rotation={[0, 0.3, 0]}
-      onClick={(e) => { e.stopPropagation(); onSelect('contact') }}
+      position={[-2.05,0.28,0.45]}
+      onClick={e => { e.stopPropagation(); onSelect('contact') }}
     >
-      {/* Base disc */}
-      <mesh castShadow receiveShadow>
-        <cylinderGeometry args={[0.22, 0.24, 0.055, 18]} />
-        <meshStandardMaterial color={C.accent} roughness={0.75} />
+      <mesh position={[0,0.22,0]} castShadow><boxGeometry args={[0.06,0.46,0.06]} /><meshStandardMaterial color={C.wallDark} roughness={0.7} /></mesh>
+      <mesh position={[0,0,0]}><boxGeometry args={[0.15,0.04,0.15]} /><meshStandardMaterial color={C.stone} roughness={0.75} /></mesh>
+      <mesh position={[0,0.48,0]}><boxGeometry args={[0.24,0.2,0.32]} /><meshStandardMaterial color={C.wall} roughness={0.58} /></mesh>
+      <mesh position={[0,0.59,0]}>
+        <cylinderGeometry args={[0.12,0.12,0.32,10,1,false,0,Math.PI]} />
+        <meshStandardMaterial color={C.accent} roughness={0.55} side={THREE.DoubleSide} />
       </mesh>
-      {/* Neck stem */}
-      <mesh position={[0, 0.10, 0]} castShadow>
-        <cylinderGeometry args={[0.075, 0.085, 0.14, 12]} />
-        <meshStandardMaterial color={C.accent} roughness={0.75} />
-      </mesh>
-      {/* Body cylinder */}
-      <mesh position={[0, 0.46, 0]} castShadow>
-        <cylinderGeometry args={[0.195, 0.195, 0.38, 16]} />
-        <meshStandardMaterial color={C.accent} roughness={0.72} />
-      </mesh>
-      {/* Dome top */}
-      <mesh position={[0, 0.65, 0]} castShadow>
-        <sphereGeometry args={[0.195, 16, 12, 0, Math.PI*2, 0, Math.PI/2]} />
-        <meshStandardMaterial color={C.accent} roughness={0.72} />
-      </mesh>
-      {/* Bottom cap */}
-      <mesh position={[0, 0.27, 0]} rotation={[Math.PI, 0, 0]} castShadow>
-        <sphereGeometry args={[0.195, 16, 12, 0, Math.PI*2, 0, Math.PI/2]} />
-        <meshStandardMaterial color={C.accent} roughness={0.72} />
-      </mesh>
-      {/* Dark opening cavity */}
-      <mesh position={[0, 0.48, 0.178]}>
-        <boxGeometry args={[0.26, 0.28, 0.04]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.85} />
-      </mesh>
-      {/* Arch top of opening */}
-      <mesh position={[0, 0.62, 0.178]} rotation={[Math.PI/2, 0, 0]}>
-        <cylinderGeometry args={[0.13, 0.13, 0.04, 12, 1, false, 0, Math.PI]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.85} />
-      </mesh>
-      {/* Envelope */}
-      <mesh position={[0, 0.50, 0.168]} rotation={[-0.2, 0, 0]} castShadow>
-        <boxGeometry args={[0.17, 0.12, 0.016]} />
-        <meshStandardMaterial color="#f0ede0" roughness={0.6} />
-      </mesh>
-      {/* Side latch */}
-      <mesh position={[0.20, 0.46, 0.02]} castShadow>
-        <sphereGeometry args={[0.025, 10, 8]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </mesh>
+      <mesh position={[0.125,0.48,0]}><boxGeometry args={[0.01,0.03,0.14]} /><meshStandardMaterial color={C.dark} /></mesh>
+      {/* Flag */}
+      <mesh position={[-0.12,0.56,0.14]}><boxGeometry args={[0.015,0.12,0.015]} /><meshStandardMaterial color={C.wallDark} /></mesh>
+      <mesh position={[-0.12,0.62,0.14]}><boxGeometry args={[0.015,0.06,0.05]} /><meshStandardMaterial color={C.screenRed} emissive={C.screenRed} emissiveIntensity={0.3} /></mesh>
+      <pointLight position={[0,0.55,0]} intensity={0.55} color="#aaddff" distance={2} decay={2} />
     </group>
   )
 }
-
 
 // ── Shared rounded-square keycap tile ─────────────────────────────────────
 // Matches reference: flat tile lying on ground, rounded corners, dark icon raised on top
@@ -973,65 +824,22 @@ function SocialBadges({ onSelect }) {
 }
 
 
-// ── Welcome Sign — flat stone slab lying tilted on ground ─────────────────
-function WelcomeSign({ onSelect }) {
+// ── Welcome Sign ── click → (removed, monitor is about now) ──
+function WelcomeSign() {
   return (
-    <group
-      position={[-0.4, 0.30, 1.72]}
-      rotation={[0.52, -0.22, -0.38]}
-      onClick={(e) => { e.stopPropagation(); onSelect('about') }}
-    >
-      {/* Main stone slab — chunky rounded box */}
-      <mesh castShadow receiveShadow>
-        <boxGeometry args={[0.72, 0.14, 0.38]} />
-        <meshStandardMaterial color={C.accent} roughness={0.85} />
-      </mesh>
-
-      {/* Slightly rounded feel — thin face plate */}
-      <mesh position={[0, 0.072, 0]}>
-        <boxGeometry args={[0.68, 0.008, 0.34]} />
-        <meshStandardMaterial color={C.islandTop} roughness={0.8} />
-      </mesh>
-
-      {/* Corner rounding blobs to give stone feel */}
-      {[[-0.34, 0, -0.18], [0.34, 0, -0.18], [-0.34, 0, 0.18], [0.34, 0, 0.18]].map(([x,y,z], i) => (
-        <mesh key={i} position={[x, y, z]} castShadow>
-          <sphereGeometry args={[0.072, 7, 6]} />
-          <meshStandardMaterial color={C.accent} roughness={0.85} />
-        </mesh>
+    <group position={[-0.5,0.32,1.55]} rotation={[0,-0.2,0]}>
+      {[-0.4,0.4].map((x,i) => (
+        <mesh key={i} position={[x,-0.22,0]}><boxGeometry args={[0.06,0.26,0.06]} /><meshStandardMaterial color={C.wood} roughness={0.82} /></mesh>
       ))}
-
-      {/* "Welcome" text lines — carved look using dark raised bars */}
-      {/* W */}
-      <mesh position={[-0.22, 0.078, 0.01]}>
-        <boxGeometry args={[0.048, 0.006, 0.115]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.6} />
-      </mesh>
-      <mesh position={[-0.18, 0.078, 0.04]} rotation={[0, 0.38, 0]}>
-        <boxGeometry args={[0.008, 0.006, 0.07]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.6} />
-      </mesh>
-      <mesh position={[-0.14, 0.078, 0.01]} rotation={[0, -0.38, 0]}>
-        <boxGeometry args={[0.008, 0.006, 0.07]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.6} />
-      </mesh>
-
-      {/* Text representation — three lines of "ink" like carved stone */}
-      <mesh position={[0.02, 0.078, -0.02]}>
-        <boxGeometry args={[0.48, 0.007, 0.028]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.02, 0.078, 0.01]}>
-        <boxGeometry args={[0.44, 0.007, 0.028]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[0.02, 0.078, 0.04]}>
-        <boxGeometry args={[0.38, 0.007, 0.028]} />
-        <meshStandardMaterial color={C.woodDk} roughness={0.5} />
-      </mesh>
-
-      {/* Subtle glow */}
-      <pointLight position={[0, 0.3, 0]} intensity={0.3} color="#ffe8c0" distance={1.0} decay={2} />
+      <mesh castShadow><boxGeometry args={[1.04,0.32,0.07]} /><meshStandardMaterial color={C.wood} roughness={0.78} /></mesh>
+      <mesh position={[0,0,0.042]}><boxGeometry args={[0.96,0.24,0.01]} /><meshStandardMaterial color={C.dark} roughness={0.3} /></mesh>
+      {[-0.04,0.04].map((dy,i) => (
+        <mesh key={i} position={[0,dy,0.052]}><boxGeometry args={[0.72,0.025,0.005]} /><meshStandardMaterial color={C.terminal} emissive={C.terminal} emissiveIntensity={1.6} /></mesh>
+      ))}
+      {[-0.32,0.32].map((x,i) => (
+        <mesh key={i} position={[x,0,0.052]}><boxGeometry args={[0.04,0.04,0.005]} /><meshStandardMaterial color={C.terminal} emissive={C.terminal} emissiveIntensity={1.2} /></mesh>
+      ))}
+      <pointLight position={[0,0.1,0.3]} intensity={0.35} color={C.terminal} distance={1.2} decay={2} />
     </group>
   )
 }
