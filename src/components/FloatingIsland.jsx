@@ -933,23 +933,43 @@ function Plant() {
   )
 }
 
-// ── Fence ─────────────────────────────────────────────────────
+// ── Fence ──────────────────────────────────────────────────────
 function FencePosts() {
-  const posts=[[-2.8,0.28,1.2],[-3.0,0.28,0.4],[-3.1,0.28,-0.4],[-2.9,0.28,-1.1]]
+  // Moved closer to center so posts stay on the island (radius 3.6)
+  // Placed along the left-back edge, visible from default camera
+  const posts = [
+    [-2.2, 0.28,  1.0],
+    [-2.5, 0.28,  0.3],
+    [-2.6, 0.28, -0.4],
+    [-2.4, 0.28, -1.0],
+  ]
   return (
     <group>
-      {posts.map(([x,y,z],i) => (
-        <group key={i} position={[x,y,z]}>
-          <mesh castShadow><boxGeometry args={[0.07,0.4,0.07]} /><meshStandardMaterial color={C.wallDark} roughness={0.75} /></mesh>
-          <mesh position={[0,0.22,0]}><coneGeometry args={[0.055,0.08,4]} /><meshStandardMaterial color={C.wall} roughness={0.7} /></mesh>
+      {/* Posts */}
+      {posts.map(([x, y, z], i) => (
+        <group key={i} position={[x, y, z]}>
+          <mesh castShadow>
+            <boxGeometry args={[0.07, 0.4, 0.07]} />
+            <meshStandardMaterial color={C.wallDk} roughness={0.75} />  {/* fixed: wallDk not wallDark */}
+          </mesh>
+          {/* Pointed cap */}
+          <mesh position={[0, 0.22, 0]}>
+            <coneGeometry args={[0.055, 0.08, 4]} />
+            <meshStandardMaterial color={C.wall} roughness={0.7} />
+          </mesh>
         </group>
       ))}
-      {posts.slice(0,-1).map(([x,y,z],j) => {
-        const [nx,,nz]=posts[j+1], mx=(x+nx)/2, mz=(z+nz)/2
-        const len=Math.sqrt((nx-x)**2+(nz-z)**2), angle=Math.atan2(nz-z,nx-x)
-        return [0.05,0.14].map((dy,ri) => (
-          <mesh key={`${j}-${ri}`} position={[mx,y+dy,mz]} rotation={[0,-angle,0]}>
-            <boxGeometry args={[len,0.03,0.03]} />
+
+      {/* Rails between posts */}
+      {posts.slice(0, -1).map(([x, y, z], j) => {
+        const [nx, , nz] = posts[j + 1]
+        const mx = (x + nx) / 2
+        const mz = (z + nz) / 2
+        const len = Math.sqrt((nx - x) ** 2 + (nz - z) ** 2)
+        const angle = Math.atan2(nz - z, nx - x)
+        return [0.05, 0.14].map((dy, ri) => (
+          <mesh key={`${j}-${ri}`} position={[mx, y + dy, mz]} rotation={[0, -angle, 0]}>
+            <boxGeometry args={[len, 0.03, 0.03]} />
             <meshStandardMaterial color={C.wall} roughness={0.72} />
           </mesh>
         ))
@@ -988,6 +1008,8 @@ function FloatingIslandScene({ onSelect }) {
       <SmallPlant position={[ 2.6, 0.28, -0.6]} />
       <SmallPlant position={[-1.2, 0.28,  2.2]} />
       <Rocks />
+      <Plant />
+      <FencePosts />
     </group>
   )
 }
