@@ -872,26 +872,26 @@ function ProjectCanvas({ onSelect }) {
 }
 
 // ── Small potted plants ────────────────────────────────────────────────────
-function SmallPlant({ position }) {
-  return (
-    <group position={position}>
-      <mesh castShadow>
-        <cylinderGeometry args={[0.065, 0.075, 0.09, 10]} />
-        <meshStandardMaterial color="#c07040" roughness={0.8} />
-      </mesh>
-      <mesh position={[0, 0.048, 0]}>
-        <cylinderGeometry args={[0.062, 0.062, 0.01, 10]} />
-        <meshStandardMaterial color="#4a3020" roughness={1} />
-      </mesh>
-      {[0,1,2].map(i => (
-        <mesh key={i} position={[Math.sin(i*2.09)*0.065, 0.14+i*0.02, Math.cos(i*2.09)*0.065]}>
-          <sphereGeometry args={[0.075, 6, 5]} />
-          <meshStandardMaterial color={C.island} roughness={1} flatShading />
-        </mesh>
-      ))}
-    </group>
-  )
-}
+// function SmallPlant({ position }) {
+//   return (
+//     <group position={position}>
+//       <mesh castShadow>
+//         <cylinderGeometry args={[0.065, 0.075, 0.09, 10]} />
+//         <meshStandardMaterial color="#c07040" roughness={0.8} />
+//       </mesh>
+//       <mesh position={[0, 0.048, 0]}>
+//         <cylinderGeometry args={[0.062, 0.062, 0.01, 10]} />
+//         <meshStandardMaterial color="#4a3020" roughness={1} />
+//       </mesh>
+//       {[0,1,2].map(i => (
+//         <mesh key={i} position={[Math.sin(i*2.09)*0.065, 0.14+i*0.02, Math.cos(i*2.09)*0.065]}>
+//           <sphereGeometry args={[0.075, 6, 5]} />
+//           <meshStandardMaterial color={C.island} roughness={1} flatShading />
+//         </mesh>
+//       ))}
+//     </group>
+//   )
+// }
 
 // ── Rocks ─────────────────────────────────────────────────────────────────
 function Rocks() {
@@ -941,9 +941,9 @@ function FencePosts() {
   const Y = 0.28
 
   // Arc from ~160° to ~280° (front-left to back-left edge)
-  const NUM_POSTS = 10
+  const NUM_POSTS = 4
   const START_ANGLE = (160 * Math.PI) / 180
-  const END_ANGLE   = (280 * Math.PI) / 180
+  const END_ANGLE   = (200 * Math.PI) / 180
 
   const posts = Array.from({ length: NUM_POSTS }, (_, i) => {
     const t = i / (NUM_POSTS - 1)
@@ -1015,9 +1015,9 @@ function FloatingIslandScene({ onSelect }) {
       <WelcomeSign onSelect={onSelect} />
       <ProjectCanvas onSelect={onSelect} />
       <SocialBadges onSelect={onSelect} />
-      <SmallPlant position={[-2.4, 0.28, -1.8]} />
+      {/* <SmallPlant position={[-2.4, 0.28, -1.8]} />
       <SmallPlant position={[ 2.6, 0.28, -0.6]} />
-      <SmallPlant position={[-1.2, 0.28,  2.2]} />
+      <SmallPlant position={[-1.2, 0.28,  2.2]} /> */}
       <Rocks />
       <Plant />
       <FencePosts />
