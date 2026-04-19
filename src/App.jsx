@@ -70,7 +70,7 @@ function SceneController({ isDay, activePanel, onPanelCameraReady }) {
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
-      <pointLight position={[0,-3,0]} intensity={0.3} color="#3040a0" distance={12} />
+      <pointLight position={[0,0,0]} intensity={5.3} color="#3040a0" distance={12} />
     </>
   )
 }

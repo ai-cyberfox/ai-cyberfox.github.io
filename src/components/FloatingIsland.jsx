@@ -67,6 +67,99 @@ function Island() {
   )
 }
 
+// ── OSCP Badge with real PNG texture ─────────────────────────────────────
+function OscpBadge({ position }) {
+  const texture = useMemo(() => {
+    const loader = new THREE.TextureLoader()
+    return loader.load('/badges/oscp.png')
+  }, [])
+
+  // Flat-top hexagon: axis along X (faces into room), rotated so flat edge is top/bottom
+  // CylinderGeometry axis = Y by default
+  // rotation=[Math.PI/2, 0, 0] → axis becomes Z (wrong)
+  // rotation=[0, 0, Math.PI/2] → axis becomes X ✓ (flat faces point ±X into/away from wall)
+  // Then rotate around X by 90° to get flat-top orientation: Math.PI/2 + Math.PI/6 = Math.PI*4/6
+  return (
+    <group position={position}>
+      {/* Outer hex ring — slightly larger, darker orange border */}
+      <mesh rotation={[Math.PI / 6, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.195, 0.195, 0.012, 6]} />
+        <meshStandardMaterial color="#8b2800" roughness={0.4} metalness={0.1} />
+      </mesh>
+
+      {/* Main hex body — orange fill */}
+      <mesh rotation={[Math.PI / 6, 0, Math.PI / 2]} position={[0.008, 0, 0]}>
+        <cylinderGeometry args={[0.178, 0.178, 0.032, 6]} />
+        <meshStandardMaterial color="#c84b11" roughness={0.3} metalness={0.05} />
+      </mesh>
+
+      {/* PNG image — sits on front face, facing into room */}
+      <mesh rotation={[0, Math.PI / 2, 0]} position={[0.026, 0, 0]}>
+        <planeGeometry args={[0.40, 0.40]} />
+        <meshStandardMaterial
+          map={texture}
+          transparent={true}
+          alphaTest={0.02}
+          roughness={0.2}
+          toneMapped={false}
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* Subtle rim light */}
+      {/* <pointLight position={[0.25, 0, 0]} intensity={0.6} color="#ff6622" distance={1.0} decay={2} /> */}
+      <pointLight position={[0, 0, 0]} intensity={5.2} color="#ff6622" distance={2.2} decay={1.5} />
+    </group>
+  )
+}
+
+function CircleBadge({ position, texturePath }) {
+  const texture = useMemo(() => {
+    const loader = new THREE.TextureLoader()
+    return loader.load(texturePath)
+  }, [texturePath])
+
+  return (
+    <group position={position}>
+      {/* Scallop bumps around edge — in XY plane, facing +X into room */}
+      {/* {Array.from({ length: 16 }, (_, i) => {
+        const angle = (i / 16) * Math.PI * 2
+        return (
+          <mesh key={i} position={[0.004, Math.cos(angle)*0.182, Math.sin(angle)*0.182]}>
+            <sphereGeometry args={[0.022, 6, 6]} />
+            <meshStandardMaterial color="#8b2800" roughness={0.4} metalness={0.1} />
+          </mesh>
+        )
+      })} */}
+      {/* Outer scalloped ring — in YZ plane, facing +X */}
+      <mesh rotation={[0, 0, Math.PI/2]}>
+        <torusGeometry args={[0.195, 0.195, 0.012, 6]} />
+        <meshStandardMaterial color="#8b2800" roughness={0.4} metalness={0.1} />
+      </mesh>
+      {/* Main circular body — flat face toward +X */}
+      <mesh rotation={[0, 0, Math.PI/2]}>
+        <cylinderGeometry args={[0.178, 0.178, 0.032, 6]} />
+        <meshStandardMaterial color="#f0f0f0" roughness={0.3} metalness={0.05} />
+      </mesh>
+      {/* PNG image — faces +X into room */}
+      <mesh rotation={[0, Math.PI/2, 0]} position={[0.022, 0, 0]}>
+        <planeGeometry args={[0.32, 0.32]} />
+        <meshStandardMaterial
+          map={texture}
+          transparent={true}
+          alphaTest={0.02}
+          roughness={0.2}
+          toneMapped={false}
+          depthWrite={false}
+        />
+      </mesh>
+      <pointLight position={[0, 0, 0]} intensity={5.2} color="#ff8844" distance={2.2} decay={1.5} />
+    </group>
+  )
+}
+
+
+
 // ── 2-wall open room (back + left only, open front + right) ───────────────
 function House() {
   return (
@@ -108,29 +201,32 @@ function House() {
         <meshStandardMaterial color={C.wallDk} roughness={0.65} />
       </RoundedBox>
 
-      {/* ── Window frame — ROUNDED ── */}
-      <RoundedBox args={[0.07, 0.62, 0.68]} radius={0.025} smoothness={4} position={[-1.21, 1.08, -0.28]}>
-        <meshStandardMaterial color={C.wallDk} roughness={0.55} />
-      </RoundedBox>
-      <mesh position={[-1.19, 1.08, -0.28]}>
-        <boxGeometry args={[0.025, 0.54, 0.6]} />
-        <meshStandardMaterial color="#c8ddf5" roughness={0.05} transparent opacity={0.7} />
-      </mesh>
-      <mesh position={[-1.185, 1.08, -0.28]}>
-        <boxGeometry args={[0.02, 0.54, 0.018]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.5} />
-      </mesh>
-      <mesh position={[-1.185, 1.08, -0.28]}>
-        <boxGeometry args={[0.02, 0.018, 0.6]} />
-        <meshStandardMaterial color={C.wallDk} roughness={0.5} />
-      </mesh>
-      {/* Window sill — ROUNDED */}
-      <RoundedBox args={[0.06, 0.055, 0.76]} radius={0.02} smoothness={3} position={[-1.18, 0.75, -0.28]}>
-        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </RoundedBox>
-      <RoundedBox args={[0.06, 0.04, 0.72]} radius={0.018} smoothness={3} position={[-1.18, 1.41, -0.28]}>
-        <meshStandardMaterial color={C.wallDk} roughness={0.6} />
-      </RoundedBox>
+{/* ── Achievement Wall ── */}  
+
+      {/* Dark backing panel */}
+      {/* <mesh position={[-1.19, 1.1, -0.5]}>
+        <boxGeometry args={[0.04, 1.15, 1.85]} />
+        <meshStandardMaterial color="#1a1a2e" roughness={0.4} />
+      </mesh> */}
+
+      {/* Green neon border - top */}
+      {/* <mesh position={[-1.185, 1.68, -0.5]}>
+        <boxGeometry args={[0.012, 0.015, 1.87]} />
+        <meshStandardMaterial color="#39ff14" emissive="#39ff14" emissiveIntensity={1.2} />
+      </mesh> */}
+      {/* Green neon border - bottom */}
+      {/* <mesh position={[-1.185, 0.52, -0.5]}>
+        <boxGeometry args={[0.012, 0.015, 1.87]} />
+        <meshStandardMaterial color="#39ff14" emissive="#39ff14" emissiveIntensity={1.2} />
+      </mesh> */}
+
+      {/* ── OSCP Badge with real PNG texture ── */}
+      <OscpBadge position={[-1.19, 1.55, 0.8]} />
+      <CircleBadge position={[-1.19, 1.55, 0.4]} texturePath="/badges/cap.png" />
+      <CircleBadge position={[-1.19, 1.55, 0]} texturePath="/badges/cnsp.png" />
+      
+      {/* Wall light */}
+      <pointLight position={[-0.9, 1.25, -0.75]} intensity={0.6} color="#ffe0cc" distance={1.2} decay={2} />
 
       {/* ── Shelf — ROUNDED ── */}
       <RoundedBox args={[0.96, 0.058, 0.12]} radius={0.02} smoothness={3} position={[0.7, 1.62, -1.15]}>
@@ -594,8 +690,8 @@ function KaliWallpaper() {
 
   return (
     <group>
-      <mesh position={[0, 0.04, 0.272]}>
-        <planeGeometry args={[0.84 * 0.74, 0.64 * 0.64]} />
+      <mesh position={[0, 0.01, 0.044]}>
+        <planeGeometry args={[1.0, 0.52]} />
         <meshStandardMaterial
           map={canvasTexture}
           emissiveMap={canvasTexture}
@@ -605,12 +701,159 @@ function KaliWallpaper() {
           roughness={0.05}
         />
       </mesh>
-      <pointLight position={[0, 0.04, 0.36]} intensity={1.0} color="#00ff41" distance={2.2} decay={2} />
+      <pointLight position={[0, 0, 0]} intensity={1.0} color="#00ff41" distance={2.2} decay={2} />
     </group>
   )
 }
 
 
+// vertical monitor display 
+
+function VerticalKaliWallpaper() {
+  const canvasTexture = useMemo(() => {
+    const canvas = document.createElement('canvas')
+    canvas.width = 800
+    canvas.height = 500
+    const ctx = canvas.getContext('2d')
+
+    const lines = []
+    const maxLines = 28
+    const logMessages = [
+      '> INITIALIZING EXPLOIT FRAMEWORK v4.2.1',
+      '> TARGET: 192.168.1.1 | PORT SCAN...',
+      '[ ** ] nmap -sV -sC -p- 192.168.1.1',
+      '[ OK ] 22/tcp  open  ssh  OpenSSH 8.2',
+      '[ OK ] 80/tcp  open  http Apache/2.4',
+      '[ !! ] 3306/tcp open mysql MySQL 5.7',
+      '[ !! ] 6379/tcp open redis Redis 6.0',
+      '──────────────────────────────────────',
+      '> LOADING MODULE: exploit/handler',
+      '[ ** ] Checking CVE-2021-44228...',
+      '[ OK ] TARGET IS VULNERABLE',
+      '[ ** ] Generating payload: linux/x64',
+      '[ OK ] PAYLOAD SIZE: 207 bytes',
+      '[ ** ] Sending exploit to target...',
+      '[ OK ] SESSION 1 OPENED',
+      '──────────────────────────────────────',
+      'meterpreter > getuid',
+      'Server username: www-data',
+      'meterpreter > sysinfo',
+      'Computer: ubuntu-server-prod',
+      'OS: Linux 5.4.0-74-generic x64',
+      '──────────────────────────────────────',
+      '> DUMPING /etc/shadow...',
+      'root:$6$xyz$AbCdEfGhIjKl:19000:0:::',
+      'ubuntu:$6$abc$ZyXwVuTs:19000:0:::',
+      '[ OK ] HASHES SAVED → /tmp/.loot/',
+      '> RUNNING HASHCAT...',
+      '[ OK ] root     : toor1234!',
+      '[ OK ] ubuntu   : ubuntu@123',
+      '──────────────────────────────────────',
+      '> ESTABLISHING PERSISTENCE...',
+      '[ OK ] CRONTAB BACKDOOR SET',
+      '[ OK ] SSH KEY INJECTED',
+      '[ OK ] HIDDEN USER CREATED',
+      '──────────────────────────────────────',
+      '>>> OPERATION COMPLETE — GHOST MODE <<<',
+      '> REINITIALIZING SCAN ON NEW SUBNET...',
+    ]
+
+    let lineIndex = 0
+    let charIndex = 0
+    let currentLine = ''
+
+    function getLineColor(line) {
+      if (line.includes('[ OK ]')) return '#00ff41'
+      if (line.includes('[ ** ]')) return '#ffdd00'
+      if (line.includes('[ !! ]')) return '#ff6600'
+      if (line.includes('>>>')) return '#ff4444'
+      if (line.includes('──')) return '#1a4a1a'
+      if (line.startsWith('>')) return '#00ccff'
+      if (line.startsWith('meterpreter')) return '#ff88ff'
+      if (line.startsWith('root:') || line.startsWith('ubuntu:')) return '#ff8844'
+      return '#00cc33'
+    }
+
+    function drawFrame(timestamp) {
+      // Rotate canvas 90° so text appears upright on vertical monitor
+      ctx.save()
+      ctx.fillStyle = '#050d05'
+      ctx.fillRect(0, 0, 800, 500)
+
+      // Draw rotated — translate to center, rotate, translate back
+      ctx.translate(800, 0)
+      ctx.rotate(Math.PI / 2)
+
+      // Now draw as if canvas is 500w x 800h (portrait)
+      ctx.fillStyle = '#050d05'
+      ctx.fillRect(0, 0, 500, 800)
+
+      for (let y = 0; y < 800; y += 3) {
+        ctx.fillStyle = 'rgba(0,0,0,0.2)'
+        ctx.fillRect(0, y, 500, 1)
+      }
+
+      for (let tick = 0; tick < 6; tick++) {
+        const m = logMessages[lineIndex % logMessages.length]
+        if (charIndex < m.length) {
+          currentLine += m[charIndex]
+          charIndex++
+        } else {
+          lines.push({ text: currentLine, color: getLineColor(currentLine) })
+          if (lines.length > maxLines) lines.shift()
+          currentLine = ''
+          charIndex = 0
+          lineIndex++
+        }
+      }
+
+      const lineH = 22
+      const startY = 20
+      ctx.font = 'bold 13px "Courier New", monospace'
+
+      lines.forEach((line, i) => {
+        const alpha = 0.35 + (i / lines.length) * 0.65
+        ctx.globalAlpha = alpha
+        ctx.fillStyle = line.color
+        ctx.fillText(line.text, 10, startY + i * lineH)
+      })
+
+      if (currentLine !== '') {
+        ctx.globalAlpha = 1.0
+        ctx.fillStyle = getLineColor(currentLine)
+        ctx.fillText(currentLine, 10, startY + lines.length * lineH)
+        if (Math.floor(timestamp / 450) % 2 === 0) {
+          const cx = 10 + ctx.measureText(currentLine).width + 2
+          ctx.fillStyle = '#00ff41'
+          ctx.fillRect(cx, startY + lines.length * lineH - 14, 8, 16)
+        }
+      }
+
+      ctx.globalAlpha = 1.0
+      ctx.restore()
+      texture.needsUpdate = true
+      requestAnimationFrame(drawFrame)
+    }
+
+    const texture = new THREE.CanvasTexture(canvas)
+    requestAnimationFrame(drawFrame)
+    return texture
+  }, [])
+
+  return (
+    <mesh position={[0, 0, 0.032]}>
+      <planeGeometry args={[0.56, 0.32]} />
+      <meshStandardMaterial
+        map={canvasTexture}
+        emissiveMap={canvasTexture}
+        emissive="#001100"
+        emissiveIntensity={0.7}
+        toneMapped={false}
+        roughness={0.05}
+      />
+    </mesh>
+  )
+}
 
 // ── Desk Setup (retro reference style) ────────────────────────────────────
 function DeskSetup({ onSelect }) {
@@ -642,37 +885,73 @@ function DeskSetup({ onSelect }) {
         <meshStandardMaterial color="#d0ccc6" roughness={0.65} />
       </RoundedBox>
 
-      {/* ── CRT Monitor — ROUNDED body ── */}
+{/* ── MAIN HORIZONTAL MONITOR ── */}
       <group position={[0.08, 1.08, 0.04]}>
-        <RoundedBox args={[0.84, 0.64, 0.5]} radius={0.04} smoothness={5} castShadow>
-          <meshStandardMaterial color="#d4d0c4" roughness={0.65} />
+        {/* Slim flat body */}
+        <RoundedBox args={[1.1, 0.62, 0.06]} radius={0.02} smoothness={4} castShadow>
+          <meshStandardMaterial color="#222228" roughness={0.4} metalness={0.5} />
         </RoundedBox>
-        {/* Screen bezel */}
-        <RoundedBox args={[0.84*0.82, 0.64*0.72, 0.018]} radius={0.025} smoothness={4} position={[0, 0.04, 0.255]}>
-          <meshStandardMaterial color="#c8c4b8" roughness={0.5} />
+        {/* Screen bezel — ultra thin */}
+        <RoundedBox args={[1.06, 0.58, 0.01]} radius={0.015} smoothness={4} position={[0, 0, 0.035]}>
+          <meshStandardMaterial color="#111116" roughness={0.3} />
         </RoundedBox>
-        {/* Screen */}
-        <mesh position={[0, 0.04, 0.266]}>
-          <boxGeometry args={[0.84*0.76, 0.64*0.66, 0.008]} />
+        {/* Screen glass */}
+        <mesh position={[0, 0.01, 0.042]}>
+          <boxGeometry args={[1.02, 0.54, 0.002]} />
           <meshStandardMaterial color="#0d1117" roughness={0.05} />
         </mesh>
-        {/* Screen content */}
-        {/* Real Kali wallpaper texture */}
+        {/* Kali wallpaper */}
         <KaliWallpaper />
-
-        {/* Stand */}
-        <RoundedBox args={[0.84*0.55, 0.06, 0.5*0.55]} radius={0.02} smoothness={3} position={[0, -0.64/2-0.04, 0]}>
-          <meshStandardMaterial color="#c8c4b8" roughness={0.6} />
+        {/* Slim neck */}
+        <mesh position={[0, -0.38, 0]}>
+          <boxGeometry args={[0.06, 0.14, 0.06]} />
+          <meshStandardMaterial color="#333338" roughness={0.4} metalness={0.4} />
+        </mesh>
+        {/* Base */}
+        <RoundedBox args={[0.5, 0.03, 0.28]} radius={0.01} smoothness={3} position={[0, -0.46, 0.08]}>
+          <meshStandardMaterial color="#2a2a2f" roughness={0.5} metalness={0.4} />
         </RoundedBox>
+        {/* RGB accent strip bottom */}
+        {/* <mesh position={[0, -0.32, 0.032]}>
+          <boxGeometry args={[1.0, 0.008, 0.002]} />
+          <meshStandardMaterial color="#ff6600" emissive="#ff6600" emissiveIntensity={1.5} roughness={0.1} />
+        </mesh> */}
         {/* Power LED */}
-        <mesh position={[0.84*0.28, -0.64*0.38, 0.262]}>
-          <sphereGeometry args={[0.006, 6, 6]} />
+        <mesh position={[0.48, -0.28, 0.034]}>
+          <sphereGeometry args={[0.005, 6, 6]} />
           <meshStandardMaterial color="#00ff44" emissive="#00ff44" emissiveIntensity={2} roughness={0.1} />
         </mesh>
+        <pointLight position={[0, 0, 0]} intensity={0.8} color="#00ff41" distance={1.8} decay={2} />
       </group>
 
-      <Keyboard position={[0.05, 0.737, 0.490]} />
-      <MouseWithCable position={[0.6, 0.738, 0.53]} />
+      {/* ── VERTICAL SIDE MONITOR ── */}
+      <group position={[-0.76, 1.08, 0.04]} rotation={[0, 0.5, Math.PI / 2]}>      
+      {/* Body — rotated 90° */}
+        <RoundedBox args={[0.62, 0.38, 0.055]} radius={0.018} smoothness={4} castShadow>
+          <meshStandardMaterial color="#222228" roughness={0.4} metalness={0.5} />
+        </RoundedBox>
+        {/* Screen */}
+        <mesh position={[0, 0, 0.03]}>
+          <boxGeometry args={[0.58, 0.34, 0.002]} />
+          <meshStandardMaterial color="#050d05" roughness={0.05} />
+        </mesh>
+        {/* Same live typing wallpaper on vertical monitor */}
+        <VerticalKaliWallpaper />
+        {/* Slim neck — goes downward in world space = X direction after rotation */}
+        <mesh position={[-0.38, 0, 0]}>
+          <boxGeometry args={[0.1, 0.05, 0.05]} />
+          <meshStandardMaterial color="#333338" roughness={0.4} metalness={0.4} />
+        </mesh>
+        {/* Small base — sits on desk */}
+        <RoundedBox args={[0.025, 0.18, 0.18]} radius={0.008} smoothness={3} position={[-0.44, 0, 0.06]}>
+          <meshStandardMaterial color="#2a2a2f" roughness={0.5} metalness={0.4} />
+        </RoundedBox>
+        <pointLight position={[0, 0, 0]} intensity={0.3} color="#39ff14" distance={1.0} decay={2} />
+      </group>
+
+
+      <Keyboard position={[0.05, 0.737, 0.400]} />
+      <MouseWithCable position={[0.6, 0.738, 0.43]} />
 
       {/* ── Desk lamp ── */}
       <group position={[0.82, 0.73, 0.022]}>
@@ -698,13 +977,13 @@ function DeskSetup({ onSelect }) {
 
       {/* ── Books stack ── */}
       {/* <group position={[0.8, 0.738, 0.065]}> */}
-      <group position={[0.8, 0.738, 0.165]}>
+      {/* <group position={[0.8, 0.738, 0.165]}>
         {[{h:0.028,w:0.18,d:0.14,col:'#c8c4b8',dy:0},{h:0.025,w:0.17,d:0.13,col:'#b8b4a8',dy:0.028},{h:0.022,w:0.16,d:0.12,col:'#c4c0b4',dy:0.053}].map((b,i) => (
           <RoundedBox key={i} args={[b.w, b.h, b.d]} radius={0.006} smoothness={3} position={[0, b.dy+b.h/2, 0]}>
             <meshStandardMaterial color={b.col} roughness={0.7} />
           </RoundedBox>
         ))}
-      </group>
+      </group> */}
 
       {/* ── Notepad ── */}
       <group position={[0.84, 0.738, 0.38]}>
@@ -760,7 +1039,8 @@ function Tree({ position = [1.85,0.28,-1.25] }) {
       {clusters.map(([x,y,z,r],i) => (
         <mesh key={i} position={[x,y,z]} castShadow>
           <sphereGeometry args={[r,8,6]} />
-          <meshStandardMaterial color={i%3===0?C.leaf:i%3===1?C.leafMid:C.island} roughness={1.0} flatShading />
+          {/* <meshStandardMaterial color={i%3===0?C.leaf:i%3===1?C.leafMid:C.island} roughness={1.0} flatShading /> */}
+          <meshStandardMaterial color="#0c9d7b" flatShading />
         </mesh>
       ))}
     </group>
@@ -851,17 +1131,17 @@ function Mailbox({ onSelect }) {
       position={[-2.05,0.28,0.45]}
       onClick={e => { e.stopPropagation(); onSelect('contact') }}
     >
-      <mesh position={[0,0.22,0]} castShadow><boxGeometry args={[0.06,0.46,0.06]} /><meshStandardMaterial color={C.wallDark} roughness={0.7} /></mesh>
-      <mesh position={[0,0,0]}><boxGeometry args={[0.15,0.04,0.15]} /><meshStandardMaterial color={C.stone} roughness={0.75} /></mesh>
-      <mesh position={[0,0.48,0]}><boxGeometry args={[0.24,0.2,0.32]} /><meshStandardMaterial color={C.wall} roughness={0.58} /></mesh>
+      <mesh position={[0,0.22,0]} castShadow><boxGeometry args={[0.06,0.46,0.06]} /><meshStandardMaterial color="#8f4040" roughness={0.7} /></mesh>
+      <mesh position={[0,0,0]}><boxGeometry args={[0.15,0.04,0.15]} /><meshStandardMaterial color="#b15959" roughness={0.75} /></mesh>
+      <mesh position={[0,0.48,0]}><boxGeometry args={[0.24,0.2,0.32]} /><meshStandardMaterial color="#8f4040" roughness={0.58} /></mesh>
       <mesh position={[0,0.59,0]}>
         <cylinderGeometry args={[0.12,0.12,0.32,10,1,false,0,Math.PI]} />
-        <meshStandardMaterial color={C.accent} roughness={0.55} side={THREE.DoubleSide} />
+        <meshStandardMaterial color="#b15959" roughness={0.55} side={THREE.DoubleSide} />
       </mesh>
-      <mesh position={[0.125,0.48,0]}><boxGeometry args={[0.01,0.03,0.14]} /><meshStandardMaterial color={C.dark} /></mesh>
+      <mesh position={[0.125,0.48,0]}><boxGeometry args={[0.01,0.03,0.14]} /><meshStandardMaterial color="#b15959" /></mesh>
       {/* Flag */}
-      <mesh position={[-0.12,0.56,0.14]}><boxGeometry args={[0.015,0.12,0.015]} /><meshStandardMaterial color={C.wallDark} /></mesh>
-      <mesh position={[-0.12,0.62,0.14]}><boxGeometry args={[0.015,0.06,0.05]} /><meshStandardMaterial color={C.screenRed} emissive={C.screenRed} emissiveIntensity={0.3} /></mesh>
+      <mesh position={[-0.12,0.56,0.14]}><boxGeometry args={[0.015,0.12,0.015]} /><meshStandardMaterial color="#b15959" /></mesh>
+      <mesh position={[-0.12,0.62,0.14]}><boxGeometry args={[0.015,0.06,0.05]} /><meshStandardMaterial color="#b15959" emissive={C.screenRed} emissiveIntensity={0.3} /></mesh>
       <pointLight position={[0,0.55,0]} intensity={0.55} color="#aaddff" distance={2} decay={2} />
     </group>
   )
@@ -1128,7 +1408,7 @@ function ProjectCanvas({ onSelect }) {
           <meshStandardMaterial color={C.termGrn} emissive={C.termGrn} emissiveIntensity={0.8} roughness={0.1} />
         </mesh>
       ))}
-      <pointLight position={[0, 0.92, 0.25]} intensity={0.6} color="#61dafb" distance={1.4} decay={2} />
+      <pointLight position={[0, 0, 0]} intensity={0.6} color="#61dafb" distance={1.4} decay={2} />
     </group>
   )
 }
@@ -1204,11 +1484,11 @@ function Steps() {
 function Plant() {
   return (
     <group position={[-2.3,0.28,-0.9]}>
-      <mesh castShadow><cylinderGeometry args={[0.1,0.07,0.16,10]} /><meshStandardMaterial color={C.stone} roughness={0.72} /></mesh>
+      <mesh castShadow><cylinderGeometry args={[0.1,0.07,0.16,10]} /><meshStandardMaterial color="#694b25" roughness={0.72} /></mesh>
       <mesh position={[0,0.09,0]}><cylinderGeometry args={[0.096,0.096,0.03,10]} /><meshStandardMaterial color="#3a2810" roughness={0.95} /></mesh>
       <mesh position={[0,0.24,0]}><cylinderGeometry args={[0.016,0.016,0.22,6]} /><meshStandardMaterial color="#5a8a2a" roughness={0.85} /></mesh>
       {[[0,0.35,0,0.14],[0.08,0.32,0.06,0.11],[-0.08,0.34,-0.05,0.1],[0.04,0.38,-0.07,0.09]].map(([x,y,z,r],i) => (
-        <mesh key={i} position={[x,y,z]}><sphereGeometry args={[r,7,6]} /><meshStandardMaterial color={C.leafMid} roughness={0.9} flatShading /></mesh>
+        <mesh key={i} position={[x,y,z]}><sphereGeometry args={[r,7,6]} /><meshStandardMaterial color="#709907" roughness={0.9} flatShading /></mesh>
       ))}
     </group>
   )
@@ -1514,11 +1794,11 @@ function FencePosts() {
         <group key={i} position={[x, y, z]} rotation={[0, -angle + Math.PI / 2, 0]}>
           <mesh castShadow>
             <boxGeometry args={[0.06, 0.44, 0.06]} />
-            <meshStandardMaterial color={C.wallDk} roughness={0.75} />
+            <meshStandardMaterial color="#694b25" roughness={0.75} />
           </mesh>
           <mesh position={[0, 0.24, 0]}>
             <coneGeometry args={[0.05, 0.09, 4]} />
-            <meshStandardMaterial color={C.wall} roughness={0.65} />
+            <meshStandardMaterial color="#3a2810" roughness={0.65} />
           </mesh>
         </group>
       ))}
@@ -1533,7 +1813,7 @@ function FencePosts() {
         return [0.06, 0.18].map((dy, ri) => (
           <mesh key={`${j}-${ri}`} position={[mx, y + dy, mz]} rotation={[0, -angle, 0]}>
             <boxGeometry args={[len, 0.025, 0.025]} />
-            <meshStandardMaterial color={C.wall} roughness={0.7} />
+            <meshStandardMaterial color="#694b25" roughness={0.7} />
           </mesh>
         ))
       })}
