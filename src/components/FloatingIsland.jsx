@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { RoundedBox } from '@react-three/drei'
+import { RoundedBox, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import gsap from 'gsap'
 
@@ -90,21 +90,21 @@ function House() {
       ))}
 
       {/* ── Back wall — ROUNDED ── */}
-      <RoundedBox args={[2.62, 2.0, 0.1]} radius={0.04} smoothness={4} position={[0, 1.0, -0.96]} castShadow>
+      <RoundedBox args={[2.62, 2.0, 0.1]} radius={0.04} smoothness={4} position={[0, 1.0, -1.26]} castShadow>
         <meshStandardMaterial color={C.wall} roughness={0.65} />
       </RoundedBox>
-      <mesh position={[0, 1.0, -0.91]}>
+      <mesh position={[0, 1.0, -1.21]}>
         <boxGeometry args={[2.6, 1.98, 0.01]} />
         <meshStandardMaterial color={C.accent} roughness={0.6} />
       </mesh>
 
       {/* ── Left wall — ROUNDED ── */}
-      <RoundedBox args={[0.1, 2.0, 2.5]} radius={0.04} smoothness={4} position={[-1.25, 1.0, 0.25]} castShadow>
+      <RoundedBox args={[0.1, 2.0, 2.5]} radius={0.04} smoothness={4} position={[-1.25, 1.0, -0.01]} castShadow>
         <meshStandardMaterial color={C.wallDk} roughness={0.65} />
       </RoundedBox>
 
       {/* ── Corner column ── */}
-      <RoundedBox args={[0.12, 2.0, 0.12]} radius={0.04} smoothness={4} position={[-1.25, 1.0, -0.96]} castShadow>
+      <RoundedBox args={[0.12, 2.0, 0.12]} radius={0.04} smoothness={4} position={[-1.25, 1.0, -1.26]} castShadow>
         <meshStandardMaterial color={C.wallDk} roughness={0.65} />
       </RoundedBox>
 
@@ -177,11 +177,11 @@ function House() {
       </group>
 
       {/* Skirting */}
-      <mesh position={[0, 0.1, -0.91]}>
+      <mesh position={[0, 0.1, -1.21]}>
         <boxGeometry args={[2.58, 0.14, 0.04]} />
         <meshStandardMaterial color={C.wallDk} roughness={0.7} />
       </mesh>
-      <mesh position={[-1.2, 0.1, 0.25]}>
+      <mesh position={[-1.2, 0.1, 0.01]}>
         <boxGeometry args={[0.04, 0.14, 2.5]} /> 
         <meshStandardMaterial color={C.wallDk} roughness={0.7} />
       </mesh>
@@ -347,7 +347,7 @@ function CRTMonitor({ position, rotation = [0,0,0], screenColor, screenContent, 
 // ── Desk Setup (retro reference style) ────────────────────────────────────
 function DeskSetup({ onSelect }) {
   return (
-    <group position={[0.1, 0.38, -0.55]} onClick={(e) => { e.stopPropagation(); onSelect('projects') }}>
+    <group position={[0.1, 0.38, -0.85]} onClick={(e) => { e.stopPropagation(); onSelect('projects') }}>
 
       {/* ── Desk top — ROUNDED ── */}
       <RoundedBox args={[2.0, 0.07, 0.95]} radius={0.025} smoothness={4} position={[0, 0.7, -0.05]} castShadow>
@@ -951,89 +951,274 @@ function Plant() {
   )
 }
 
-// ── Telephone Tower ────────────────────────────────────────────
-function TelephoneTower() {
+
+// ── Breathing red warning light ────────────────────────────────
+function BreathingLight({ y1, y2 }) {
+  const light1Ref = useRef()
+  const light2Ref = useRef()
+  const matRef    = useRef()
+  const pointRef  = useRef()
+
+  useFrame(({ clock }) => {
+    const t = clock.elapsedTime
+    // Slow breathing pulse — sin wave 0.3 to 1.0
+    const pulse = 0.3 + Math.abs(Math.sin(t * 1.2)) * 0.7
+    const intensity = 0.5 + Math.abs(Math.sin(t * 1.2)) * 4.5
+
+    if (matRef.current) {
+      matRef.current.emissiveIntensity = intensity
+    }
+    if (pointRef.current) {
+      pointRef.current.intensity = pulse * 3.5
+    }
+  })
+
   return (
-    <group position={[-0.5, 0.38, -2.8]}>
-      {/* Main vertical pole */}
-      <mesh castShadow>
-        <cylinderGeometry args={[0.04, 0.06, 2.2, 8]} />
-        <meshStandardMaterial color="#888899" roughness={0.6} metalness={0.3} />
+    <group>
+      {/* Light sphere 1 */}
+      <mesh position={[0, y1, 0]}>
+        <sphereGeometry args={[0.032, 10, 10]} />
+        <meshStandardMaterial
+          ref={matRef}
+          color="#ff1100"
+          emissive="#ff2200"
+          emissiveIntensity={3}
+          roughness={0.05}
+          transparent
+          opacity={0.95}
+        />
       </mesh>
 
-      {/* Cross arm 1 — top */}
-      <mesh position={[0, 0.9, 0]} castShadow>
-        <boxGeometry args={[0.8, 0.04, 0.04]} />
-        <meshStandardMaterial color="#777788" roughness={0.6} metalness={0.3} />
-      </mesh>
-      {/* Cross arm 2 — middle */}
-      <mesh position={[0, 0.5, 0]} castShadow>
-        <boxGeometry args={[0.6, 0.04, 0.04]} />
-        <meshStandardMaterial color="#777788" roughness={0.6} metalness={0.3} />
-      </mesh>
-      {/* Cross arm 3 — lower */}
-      <mesh position={[0, 0.1, 0]} castShadow>
-        <boxGeometry args={[0.44, 0.04, 0.04]} />
-        <meshStandardMaterial color="#777788" roughness={0.6} metalness={0.3} />
+      {/* Light sphere 2 — slightly offset phase */}
+      <mesh position={[0, y2, 0]}>
+        <sphereGeometry args={[0.028, 10, 10]} />
+        <meshStandardMaterial
+          color="#ff1100"
+          emissive="#ff2200"
+          emissiveIntensity={3}
+          roughness={0.05}
+          transparent
+          opacity={0.9}
+        />
       </mesh>
 
-      {/* Insulators left — top arm */}
-      {[-0.36, 0, 0.36].map((x, i) => (
-        <mesh key={i} position={[x, 0.92, 0]}>
-          <cylinderGeometry args={[0.022, 0.022, 0.06, 8]} />
-          <meshStandardMaterial color="#cc4422" roughness={0.5} />
+      {/* Glow halo around light 1 */}
+      <mesh position={[0, y1, 0]}>
+        <sphereGeometry args={[0.06, 10, 10]} />
+        <meshStandardMaterial
+          color="#ff2200"
+          emissive="#ff2200"
+          emissiveIntensity={1}
+          roughness={0.1}
+          transparent
+          opacity={0.18}
+        />
+      </mesh>
+
+      {/* Animated point light */}
+      <pointLight
+        ref={pointRef}
+        position={[0, y1, 0]}
+        intensity={2}
+        color="#ff2200"
+        distance={3}
+        decay={2}
+      />
+    </group>
+  )
+}
+
+
+// ── Cell Tower with Red/White Lattice Base ─────────────────────
+function TelephoneTower() {
+
+  // Helper: one lattice section with 4 corner legs + X cross braces
+  function LatticeSection({ y, topW, botW, height, white = false }) {
+    const color = white ? '#dddddd' : '#cc2200'
+    const hw = white ? '#eeeeee' : '#dd3300'
+    const corners = [[ 1,  1], [-1,  1], [ 1, -1], [-1, -1]]
+    return (
+      <group position={[0, y, 0]}>
+        {/* Corner legs */}
+        {corners.map(([sx, sz], i) => {
+          const bx = sx * botW, bz = sz * botW
+          const tx = sx * topW, tz = sz * topW
+          const mx = (bx + tx) / 2, mz = (bz + tz) / 2
+          const dx = tx - bx, dz = tz - bz
+          const len = Math.sqrt(dx*dx + height*height + dz*dz)
+          const rotZ = Math.atan2(-dx, height)
+          const rotX = Math.atan2(dz, height)
+          return (
+            <mesh key={i} position={[mx, height/2, mz]}
+              rotation={[rotX, 0, rotZ]} castShadow>
+              <cylinderGeometry args={[0.018, 0.022, len, 6]} />
+              <meshStandardMaterial color={color} roughness={0.5} metalness={0.4} />
+            </mesh>
+          )
+        })}
+        {/* X cross brace — front face */}
+        {[1, -1].map((dir, i) => {
+          const x1 = botW, z1 = botW * dir
+          const x2 = topW, z2 = topW * dir * -1
+          const mx = (x1 + x2) / 2, mz = (z1 + z2) / 2
+          const dx = x2 - x1, dz = z2 - z1
+          const len = Math.sqrt(dx*dx + height*height + dz*dz)
+          return (
+            <mesh key={i} position={[mx, height/2, mz]}
+              rotation={[Math.atan2(dz, height), 0, Math.atan2(-dx, height)]} castShadow>
+              <cylinderGeometry args={[0.012, 0.012, len, 5]} />
+              <meshStandardMaterial color={hw} roughness={0.5} metalness={0.3} />
+            </mesh>
+          )
+        })}
+        {/* X cross brace — side face */}
+        {[1, -1].map((dir, i) => {
+          const x1 = botW * dir, z1 = botW
+          const x2 = topW * dir * -1, z2 = topW
+          const mx = (x1 + x2) / 2, mz = (z1 + z2) / 2
+          const dx = x2 - x1, dz = z2 - z1
+          const len = Math.sqrt(dx*dx + height*height + dz*dz)
+          return (
+            <mesh key={i} position={[mx, height/2, mz]}
+              rotation={[Math.atan2(dz, height), 0, Math.atan2(-dx, height)]} castShadow>
+              <cylinderGeometry args={[0.012, 0.012, len, 5]} />
+              <meshStandardMaterial color={hw} roughness={0.5} metalness={0.3} />
+            </mesh>
+          )
+        })}
+        {/* Horizontal ring at bottom */}
+        <mesh position={[0, 0.01, 0]} rotation={[Math.PI/2, 0, Math.PI/4]}>
+          <torusGeometry args={[botW * 1.38, 0.013, 6, 4]} />
+          <meshStandardMaterial color={color} roughness={0.5} metalness={0.4} />
+        </mesh>
+        {/* Horizontal ring at top */}
+        <mesh position={[0, height - 0.01, 0]} rotation={[Math.PI/2, 0, Math.PI/4]}>
+          <torusGeometry args={[topW * 1.38, 0.013, 6, 4]} />
+          <meshStandardMaterial color={color} roughness={0.5} metalness={0.4} />
+        </mesh>
+      </group>
+    )
+  }
+
+  return (
+    <group position={[-0.5, 1.68, -2.8]}>
+
+      {/* ══ LATTICE BASE — alternating red/white ══ */}
+      <LatticeSection y={-1.6}  botW={0.40} topW={0.30} height={0.55} white={false} />
+      <LatticeSection y={-1.05} botW={0.30} topW={0.22} height={0.50} white={true}  />
+      <LatticeSection y={-0.55} botW={0.22} topW={0.14} height={0.45} white={false} />
+      <LatticeSection y={-0.1}  botW={0.14} topW={0.06} height={0.40} white={true}  />
+
+      {/* ══ MAIN SHAFT ══ */}
+      <mesh position={[0, 0.8, 0]} castShadow>
+        <cylinderGeometry args={[0.03, 0.06, 1.8, 8]} />
+        <meshStandardMaterial color="#888899" roughness={0.4} metalness={0.6} />
+      </mesh>
+
+      {/* ══ TOP MAST ══ */}
+      <mesh position={[0, 1.85, 0]} castShadow>
+        <cylinderGeometry args={[0.015, 0.025, 0.7, 6]} />
+        <meshStandardMaterial color="#7a7a8a" roughness={0.4} metalness={0.6} />
+      </mesh>
+
+      {/* ══ RED WARNING LIGHTS — breathing glow ══ */}
+      <BreathingLight y1={2.2} y2={2.32} />
+
+      {/* ══ ANTENNA PANELS ══ */}
+      <group position={[-0.14, 1.35, 0.05]}>
+        <mesh castShadow>
+          <boxGeometry args={[0.13, 0.52, 0.06]} />
+          <meshStandardMaterial color="#d8dde8" roughness={0.3} metalness={0.2} />
+        </mesh>
+        {[-0.15, 0, 0.15].map((y, i) => (
+          <mesh key={i} position={[0, y, 0.033]}>
+            <boxGeometry args={[0.11, 0.01, 0.002]} />
+            <meshStandardMaterial color="#aab0bc" roughness={0.4} />
+          </mesh>
+        ))}
+        <mesh position={[0.1, 0, 0]}>
+          <boxGeometry args={[0.055, 0.07, 0.04]} />
+          <meshStandardMaterial color="#555566" roughness={0.5} metalness={0.5} />
+        </mesh>
+      </group>
+
+      <group position={[0.14, 1.25, -0.05]}>
+        <mesh castShadow>
+          <boxGeometry args={[0.13, 0.58, 0.06]} />
+          <meshStandardMaterial color="#d0d5e0" roughness={0.3} metalness={0.2} />
+        </mesh>
+        {[-0.18, -0.06, 0.06, 0.18].map((y, i) => (
+          <mesh key={i} position={[0, y, 0.033]}>
+            <boxGeometry args={[0.11, 0.01, 0.002]} />
+            <meshStandardMaterial color="#a8aeba" roughness={0.4} />
+          </mesh>
+        ))}
+        <mesh position={[-0.1, 0, 0]}>
+          <boxGeometry args={[0.055, 0.07, 0.04]} />
+          <meshStandardMaterial color="#555566" roughness={0.5} metalness={0.5} />
+        </mesh>
+      </group>
+
+      {/* ══ EQUIPMENT BOXES ══ */}
+      <group position={[-0.16, 0.42, 0]}>
+        <mesh castShadow>
+          <boxGeometry args={[0.15, 0.20, 0.09]} />
+          <meshStandardMaterial color="#b8bcc8" roughness={0.4} metalness={0.3} />
+        </mesh>
+        {[-0.06, 0, 0.06].map((y, i) => (
+          <mesh key={i} position={[0, y, 0.047]}>
+            <boxGeometry args={[0.12, 0.014, 0.002]} />
+            <meshStandardMaterial color="#9a9eaa" roughness={0.5} />
+          </mesh>
+        ))}
+      </group>
+      <group position={[0.16, 0.32, 0]}>
+        <mesh castShadow>
+          <boxGeometry args={[0.13, 0.17, 0.08]} />
+          <meshStandardMaterial color="#c0c4d0" roughness={0.4} metalness={0.3} />
+        </mesh>
+      </group>
+
+      {/* ══ MICROWAVE DISH ══ */}
+      <group position={[-0.26, 0.18, 0.0]} rotation={[0, -0.3, 0]}>
+        <mesh castShadow rotation={[0, Math.PI/2, 0]}>
+          <sphereGeometry args={[0.11, 10, 8, 0, Math.PI*2, 0, Math.PI/2]} />
+          <meshStandardMaterial color="#c8ccd8" roughness={0.3} metalness={0.4} side={THREE.DoubleSide} />
+        </mesh>
+        <mesh rotation={[0, Math.PI/2, 0]}>
+          <torusGeometry args={[0.11, 0.007, 6, 20]} />
+          <meshStandardMaterial color="#888899" roughness={0.4} metalness={0.5} />
+        </mesh>
+        <mesh position={[0.07, 0, 0]} rotation={[0, 0, Math.PI/2]}>
+          <cylinderGeometry args={[0.013, 0.018, 0.09, 8]} />
+          <meshStandardMaterial color="#666677" roughness={0.4} metalness={0.5} />
+        </mesh>
+      </group>
+
+      {/* ══ CABLE RUNS ══ */}
+      {[-0.04, 0, 0.04].map((x, i) => (
+        <mesh key={i} position={[x, 0.5, 0.04]}>
+          <cylinderGeometry args={[0.004, 0.004, 2.6, 4]} />
+          <meshStandardMaterial color="#222233" roughness={0.8} />
         </mesh>
       ))}
-      {/* Insulators — middle arm */}
-      {[-0.26, 0, 0.26].map((x, i) => (
-        <mesh key={i} position={[x, 0.52, 0]}>
-          <cylinderGeometry args={[0.018, 0.018, 0.05, 8]} />
-          <meshStandardMaterial color="#cc4422" roughness={0.5} />
-        </mesh>
-      ))}
-      {/* Insulators — lower arm */}
-      {[-0.18, 0, 0.18].map((x, i) => (
-        <mesh key={i} position={[x, 0.12, 0]}>
-          <cylinderGeometry args={[0.015, 0.015, 0.04, 8]} />
-          <meshStandardMaterial color="#cc4422" roughness={0.5} />
-        </mesh>
-      ))}
 
-      {/* Wires top arm */}
-      {[-0.36, 0, 0.36].map((x, i) => (
-        <mesh key={i} position={[x, 0.75, 0]} rotation={[0, 0, 0.08]}>
-          <cylinderGeometry args={[0.006, 0.006, 0.36, 4]} />
-          <meshStandardMaterial color="#444455" roughness={0.8} />
-        </mesh>
-      ))}
-
-      {/* Base plate */}
-      <mesh position={[0, -1.1, 0]} castShadow>
-        <boxGeometry args={[0.28, 0.06, 0.28]} />
-        <meshStandardMaterial color="#666677" roughness={0.7} metalness={0.2} />
-      </mesh>
-
-      {/* Guy wires — diagonal supports */}
-      {[[0.4, 0, 0.4], [-0.4, 0, 0.4], [0.4, 0, -0.4], [-0.4, 0, -0.4]].map(([x,,z], i) => {
-        const len = Math.sqrt(x*x + 0.8*0.8 + z*z)
+      {/* ══ BASE FEET ══ */}
+      {[0, 1, 2, 3].map(i => {
+        const a = (i / 4) * Math.PI * 2 + Math.PI / 4
         return (
-          <mesh key={i} position={[x/2, 0.4, z/2]}
-            rotation={[Math.atan2(Math.sqrt(x*x+z*z), 0.8), Math.atan2(z, x), 0]}>
-            <cylinderGeometry args={[0.005, 0.005, len * 0.7, 4]} />
-            <meshStandardMaterial color="#555566" roughness={0.8} />
+          <mesh key={i} position={[Math.cos(a) * 0.4, -1.62, Math.sin(a) * 0.4]} castShadow>
+            <boxGeometry args={[0.12, 0.06, 0.12]} />
+            <meshStandardMaterial color="#444455" roughness={0.7} metalness={0.4} />
           </mesh>
         )
       })}
 
-      {/* Red warning light on top */}
-      <mesh position={[0, 1.15, 0]}>
-        <sphereGeometry args={[0.035, 8, 8]} />
-        <meshStandardMaterial color="#ff2200" emissive="#ff2200" emissiveIntensity={2} roughness={0.1} />
-      </mesh>
-      <pointLight position={[0, 1.15, 0]} intensity={0.4} color="#ff2200" distance={1.5} decay={2} />
     </group>
   )
 }
+
+
 
 
 // ── Fence along island edge ────────────────────────────────────
