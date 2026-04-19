@@ -694,8 +694,11 @@ function DeskSetup({ onSelect }) {
         <mesh position={[0.058, 0.01, 0]} rotation={[0, 0, Math.PI/2]}><torusGeometry args={[0.024, 0.007, 6, 12, Math.PI]} /><meshStandardMaterial color="#d0ccc6" roughness={0.5} /></mesh>
       </group>
 
+
+
       {/* ── Books stack ── */}
-      <group position={[0.3, 0.738, 0.065]}>
+      {/* <group position={[0.8, 0.738, 0.065]}> */}
+      <group position={[0.8, 0.738, 0.165]}>
         {[{h:0.028,w:0.18,d:0.14,col:'#c8c4b8',dy:0},{h:0.025,w:0.17,d:0.13,col:'#b8b4a8',dy:0.028},{h:0.022,w:0.16,d:0.12,col:'#c4c0b4',dy:0.053}].map((b,i) => (
           <RoundedBox key={i} args={[b.w, b.h, b.d]} radius={0.006} smoothness={3} position={[0, b.dy+b.h/2, 0]}>
             <meshStandardMaterial color={b.col} roughness={0.7} />
