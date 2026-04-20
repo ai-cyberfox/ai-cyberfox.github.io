@@ -159,6 +159,55 @@ function CircleBadge({ position, texturePath }) {
 }
 
 
+// ── Kali Dragon on outer left wall ───────────────────────────────────────
+function KaliDragon() {
+  const texture = useMemo(() => {
+    return new THREE.TextureLoader().load('/badges/kali-dragon.png')
+  }, [])
+
+  return (
+    <group position={[-1.26, 1.38, -0.51]}>
+      {/* Full wall coverage — left wall is 2.0 tall × 2.5 deep */}
+      <mesh rotation={[0, -Math.PI / 2, 0]}>
+        <planeGeometry args={[2.4, 1.9]} />
+        <meshStandardMaterial
+          map={texture}
+          transparent={true}
+          alphaTest={0.05}
+          roughness={0.4}
+          emissive="#1133aa"
+          emissiveIntensity={0.2}
+          toneMapped={false}
+        />
+      </mesh>
+      <pointLight position={[0, 0, 0]} intensity={0.4} color="#0188ff" distance={6.0} decay={9} />
+    </group>
+  )
+}
+
+
+
+function WallPoster({ position, rotation, texturePath, width, height }) {
+  const texture = useMemo(() => {
+    const loader = new THREE.TextureLoader()
+    return loader.load(texturePath)
+  }, [texturePath])
+
+  return (
+    <mesh position={position} rotation={rotation}>
+      <planeGeometry args={[width, height]} />
+      <meshStandardMaterial
+        map={texture}
+        transparent={true}
+        alphaTest={0.05}
+        roughness={0.3}
+        toneMapped={false}
+        depthWrite={false}
+      />
+    </mesh>
+  )
+}
+
 
 // ── 2-wall open room (back + left only, open front + right) ───────────────
 function House() {
@@ -277,8 +326,36 @@ function House() {
         <meshStandardMaterial color={C.wallDk} roughness={0.7} />
       </mesh>
 
+      {/* ── Vivek terminal logo — outside back wall ── */}
+      <mesh position={[0.2, 1.1, -1.32]}>
+        <planeGeometry args={[1.2, 0.55]} />
+        <meshStandardMaterial
+          map={(() => {
+            const loader = new THREE.TextureLoader()
+            return loader.load('/badges/vivek-terminal.png')
+          })()}
+          transparent={true}
+          alphaTest={0.05}
+          roughness={0.2}
+          toneMapped={false}
+          depthWrite={false}
+        />
+      </mesh>
+
       <pointLight position={[0.2, 1.8, -0.2]} intensity={2.2} color="#ffe8c0" distance={4.0} decay={2} />
       <pointLight position={[1.0, 1.2, 0.6]} intensity={0.6} color="#d0d8f0" distance={3.0} decay={2} />
+
+      <WallPoster
+        position={[0.0, 1.1, -1.32]}
+        rotation={[0, Math.PI, 0]}
+        texturePath="/badges/vivek-terminal.png"
+        width={2.4}
+        height={1.1}
+      />
+      {/* Glow behind the poster */}
+      <pointLight position={[0.0, 1.1, -1.5]} intensity={1.8} color="#00ccff" distance={2.5} decay={1.5} />
+      <pointLight position={[0.0, 1.1, -1.5]} intensity={1.2} color="#cc0000" distance={2.0} decay={1.5} />
+
     </group>
   )
 }
@@ -1835,6 +1912,7 @@ function FloatingIslandScene({ onSelect }) {
     <group ref={groupRef}>
       <Island />
       <House />
+      <KaliDragon />
       <Steps />
       <DeskSetup onSelect={onSelect} />
       {/* Chair REMOVED as requested */}
