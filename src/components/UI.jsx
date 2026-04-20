@@ -2,22 +2,20 @@ import { useState, useEffect } from 'react'
 import { PERSON, SKILLS, PROJECTS, SOCIALS, ABOUT } from '../content.js'
 
 const PANELS = {
-  about: {
-    title: 'About Me',
-    icon: '◈',
-  },
-  projects: {
-    title: 'Projects',
-    icon: '⌨',
-  },
-  skills: {
-    title: 'Skills',
-    icon: '◉',
-  },
-  contact: {
-    title: 'Contact',
-    icon: '✉',
-  },
+  about:    { title: 'About Me',  icon: '◈' },
+  projects: { title: 'Projects',  icon: '⌨' },
+  skills:   { title: 'Skills',    icon: '◉' },
+  contact:  { title: 'Contact',   icon: '✉' },
+}
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(window.innerWidth < 640)
+  useEffect(() => {
+    const fn = () => setMobile(window.innerWidth < 640)
+    window.addEventListener('resize', fn)
+    return () => window.removeEventListener('resize', fn)
+  }, [])
+  return mobile
 }
 
 function SocialIcon({ type }) {
@@ -132,9 +130,12 @@ function PanelContent({ type }) {
 
 export default function UI({ isDay, onToggleDay, activePanel, onClosePanel }) {
   const [visible, setVisible] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     if (activePanel) {
+      setMenuOpen(false)
       setTimeout(() => setVisible(true), 10)
     } else {
       setVisible(false)
@@ -143,20 +144,25 @@ export default function UI({ isDay, onToggleDay, activePanel, onClosePanel }) {
 
   const panelInfo = activePanel ? PANELS[activePanel] : null
 
+  // Panel width: full screen on mobile, 340px on desktop
+  const panelWidth = isMobile ? '100vw' : '340px'
+
   return (
     <div style={{
       position:'fixed', top:0, left:0, right:0, bottom:0,
       pointerEvents:'none', zIndex:10,
       fontFamily:"'Segoe UI', system-ui, sans-serif",
     }}>
+
       {/* ── Top nav ── */}
       <div style={{
         position:'absolute', top:0, left:0, right:0,
         display:'flex', alignItems:'center', justifyContent:'space-between',
-        padding:'18px 28px', pointerEvents:'auto',
+        padding: isMobile ? '14px 16px' : '18px 28px',
+        pointerEvents:'auto',
       }}>
         {/* Logo + name */}
-        <div style={{display:'flex', alignItems:'center', gap:12}}>
+        <div style={{display:'flex', alignItems:'center', gap:10}}>
           <div style={{
             width:36, height:36, borderRadius:10,
             background:'rgba(57,255,20,0.12)',
@@ -166,58 +172,125 @@ export default function UI({ isDay, onToggleDay, activePanel, onClosePanel }) {
             color:'#39ff14', fontSize:18,
           }}>⬡</div>
           <div>
-            <div style={{color:'white', fontWeight:500, fontSize:14, lineHeight:1.2}}>{PERSON.name}</div>
-            <div style={{color:'rgba(255,255,255,0.45)', fontSize:11}}>{PERSON.tagline}</div>
+            <div style={{color:'white', fontWeight:500, fontSize: isMobile ? 13 : 14, lineHeight:1.2}}>{PERSON.name}</div>
+            <div style={{color:'rgba(255,255,255,0.45)', fontSize:10}}>{PERSON.tagline}</div>
           </div>
         </div>
 
-        {/* Nav links */}
-        <div style={{display:'flex', gap:8, alignItems:'center'}}>
+        {/* Desktop nav */}
+        {!isMobile && (
+          <div style={{display:'flex', gap:8, alignItems:'center'}}>
+            {Object.entries(PANELS).map(([key, val]) => (
+              <button
+                key={key}
+                style={{
+                  padding:'7px 14px', borderRadius:8,
+                  background: activePanel === key ? 'rgba(57,255,20,0.15)' : 'rgba(255,255,255,0.07)',
+                  backdropFilter:'blur(8px)',
+                  border: activePanel === key ? '1px solid rgba(57,255,20,0.35)' : '1px solid rgba(255,255,255,0.12)',
+                  color: activePanel === key ? '#39ff14' : 'rgba(255,255,255,0.7)',
+                  fontSize:12, cursor:'pointer', transition:'all 0.2s',
+                }}
+                onClick={() => activePanel === key ? onClosePanel() : onClosePanel(key)}
+              >
+                {val.icon} {val.title}
+              </button>
+            ))}
+            <button onClick={onToggleDay} style={{
+              width:38, height:38, borderRadius:10,
+              background:'rgba(255,255,255,0.07)',
+              backdropFilter:'blur(8px)',
+              border:'1px solid rgba(255,255,255,0.12)',
+              color:'white', fontSize:16, cursor:'pointer',
+              display:'flex', alignItems:'center', justifyContent:'center',
+            }}>{isDay ? '☀️' : '🌙'}</button>
+          </div>
+        )}
+
+        {/* Mobile hamburger */}
+        {isMobile && (
+          <div style={{display:'flex', gap:8, alignItems:'center'}}>
+            <button onClick={onToggleDay} style={{
+              width:36, height:36, borderRadius:8,
+              background:'rgba(255,255,255,0.07)',
+              backdropFilter:'blur(8px)',
+              border:'1px solid rgba(255,255,255,0.12)',
+              color:'white', fontSize:14, cursor:'pointer',
+              display:'flex', alignItems:'center', justifyContent:'center',
+            }}>{isDay ? '☀️' : '🌙'}</button>
+
+            <button
+              onClick={() => setMenuOpen(m => !m)}
+              style={{
+                width:36, height:36, borderRadius:8,
+                background: menuOpen ? 'rgba(57,255,20,0.15)' : 'rgba(255,255,255,0.07)',
+                backdropFilter:'blur(8px)',
+                border: menuOpen ? '1px solid rgba(57,255,20,0.35)' : '1px solid rgba(255,255,255,0.12)',
+                color:'white', fontSize:18, cursor:'pointer',
+                display:'flex', alignItems:'center', justifyContent:'center',
+              }}
+            >
+              {menuOpen ? '✕' : '☰'}
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* ── Mobile dropdown menu ── */}
+      {isMobile && menuOpen && (
+        <div style={{
+          position:'absolute', top:64, right:16, left:16,
+          background:'rgba(6,13,26,0.95)',
+          backdropFilter:'blur(20px)',
+          border:'1px solid rgba(255,255,255,0.1)',
+          borderRadius:12,
+          padding:'8px',
+          pointerEvents:'auto',
+          zIndex:20,
+        }}>
           {Object.entries(PANELS).map(([key, val]) => (
             <button
               key={key}
               style={{
-                padding:'7px 14px', borderRadius:8,
-                background: activePanel === key ? 'rgba(57,255,20,0.15)' : 'rgba(255,255,255,0.07)',
-                backdropFilter:'blur(8px)',
-                border: activePanel === key ? '1px solid rgba(57,255,20,0.35)' : '1px solid rgba(255,255,255,0.12)',
-                color: activePanel === key ? '#39ff14' : 'rgba(255,255,255,0.7)',
-                fontSize:12, cursor:'pointer', transition:'all 0.2s',
+                width:'100%', padding:'12px 16px',
+                borderRadius:8, marginBottom:4,
+                background: activePanel === key ? 'rgba(57,255,20,0.15)' : 'transparent',
+                border: activePanel === key ? '1px solid rgba(57,255,20,0.3)' : '1px solid transparent',
+                color: activePanel === key ? '#39ff14' : 'rgba(255,255,255,0.8)',
+                fontSize:14, cursor:'pointer',
+                display:'flex', alignItems:'center', gap:10,
+                textAlign:'left',
               }}
-              onClick={() => activePanel === key ? onClosePanel() : onClosePanel(key)}
+              onClick={() => {
+                setMenuOpen(false)
+                activePanel === key ? onClosePanel() : onClosePanel(key)
+              }}
             >
-              {val.icon} {val.title}
+              <span style={{fontSize:16}}>{val.icon}</span>
+              {val.title}
             </button>
           ))}
-
-          {/* Day/night */}
-          <button onClick={onToggleDay} style={{
-            width:38, height:38, borderRadius:10,
-            background:'rgba(255,255,255,0.07)',
-            backdropFilter:'blur(8px)',
-            border:'1px solid rgba(255,255,255,0.12)',
-            color:'white', fontSize:16, cursor:'pointer',
-            display:'flex', alignItems:'center', justifyContent:'center',
-          }}>{isDay ? '☀️' : '🌙'}</button>
         </div>
-      </div>
+      )}
 
       {/* ── Side panel ── */}
       {activePanel && (
         <div style={{
           position:'absolute', right:0, top:0, bottom:0,
-          width:340, pointerEvents:'auto',
-          background:'rgba(6,13,26,0.85)',
+          width: panelWidth,
+          pointerEvents:'auto',
+          background:'rgba(6,13,26,0.92)',
           backdropFilter:'blur(20px)',
           borderLeft:'1px solid rgba(255,255,255,0.08)',
           transform: visible ? 'translateX(0)' : 'translateX(100%)',
           transition:'transform 0.4s cubic-bezier(0.4,0,0.2,1)',
           display:'flex', flexDirection:'column',
           overflowY:'auto',
+          zIndex:15,
         }}>
           {/* Panel header */}
           <div style={{
-            padding:'72px 24px 20px',
+            padding: isMobile ? '60px 20px 16px' : '72px 24px 20px',
             borderBottom:'1px solid rgba(255,255,255,0.07)',
           }}>
             <div style={{display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4}}>
@@ -234,20 +307,21 @@ export default function UI({ isDay, onToggleDay, activePanel, onClosePanel }) {
           </div>
 
           {/* Panel body */}
-          <div style={{padding:'20px 24px', flex:1}}>
+          <div style={{padding: isMobile ? '16px 20px' : '20px 24px', flex:1}}>
             <PanelContent type={activePanel} />
           </div>
         </div>
       )}
 
       {/* ── Hint text ── */}
-      {!activePanel && (
+      {!activePanel && !menuOpen && (
         <div style={{
           position:'absolute', bottom:32, left:'50%', transform:'translateX(-50%)',
           color:'rgba(255,255,255,0.35)', fontSize:12, letterSpacing:'0.06em',
           userSelect:'none', textAlign:'center', lineHeight:1.6,
+          whiteSpace:'nowrap',
         }}>
-          drag to orbit · scroll to zoom · click objects to explore
+          {isMobile ? 'pinch to zoom · tap objects to explore' : 'drag to orbit · scroll to zoom · click objects to explore'}
         </div>
       )}
     </div>

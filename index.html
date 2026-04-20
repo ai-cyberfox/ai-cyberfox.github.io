@@ -4,13 +4,193 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vivek Choudhary — Security Engineer</title>
+
+    <!-- ── Meta tags ── -->
+    <meta name="description" content="Vivek Choudhary — Penetration Tester, CTF Player & Bug Hunter. Interactive 3D portfolio built with React Three Fiber." />
+    <meta name="keywords" content="Vivek Choudhary, Security Engineer, Penetration Testing, CTF, Bug Bounty, Ethical Hacking, Red Team" />
+    <meta name="author" content="Vivek Choudhary" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- ── Open Graph (social sharing) ── -->
+    <meta property="og:title" content="Vivek Choudhary — Security Engineer" />
+    <meta property="og:description" content="Penetration Tester · CTF Player · Bug Hunter. Interactive 3D portfolio." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ai-cyberfox.github.io" />
+    <meta property="og:image" content="https://ai-cyberfox.github.io/og-image.png" />
+
+    <!-- ── Twitter Card ── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Vivek Choudhary — Security Engineer" />
+    <meta name="twitter:description" content="Penetration Tester · CTF Player · Bug Hunter. Interactive 3D portfolio." />
+    <meta name="twitter:image" content="https://ai-cyberfox.github.io/og-image.png" />
+
+    <!-- ── Favicon ── -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" href="/favicon.ico" />
+
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       html, body, #root { width: 100%; height: 100%; overflow: hidden; background: #060d1a; }
+
+      /* ── Loading screen ── */
+      #loading-screen {
+        position: fixed;
+        inset: 0;
+        background: #060d1a;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.6s ease;
+      }
+      #loading-screen.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* Hexagon logo */
+      .loader-logo {
+        width: 64px;
+        height: 64px;
+        margin-bottom: 28px;
+        animation: pulse 2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); opacity: 0.8; }
+        50% { transform: scale(1.08); opacity: 1; }
+      }
+
+      .loader-name {
+        color: #ffffff;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 22px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        margin-bottom: 6px;
+      }
+      .loader-tagline {
+        color: rgba(255,255,255,0.4);
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 40px;
+      }
+
+      /* Progress bar */
+      .loader-bar-wrap {
+        width: 220px;
+        height: 2px;
+        background: rgba(255,255,255,0.08);
+        border-radius: 2px;
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+      .loader-bar {
+        height: 100%;
+        background: linear-gradient(90deg, #39ff14, #00cc88);
+        border-radius: 2px;
+        width: 0%;
+        transition: width 0.3s ease;
+        box-shadow: 0 0 8px rgba(57,255,20,0.6);
+      }
+      .loader-status {
+        color: rgba(57,255,20,0.6);
+        font-family: 'Courier New', monospace;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+      }
+
+      /* Animated dots */
+      .loader-dots::after {
+        content: '';
+        animation: dots 1.4s steps(4, end) infinite;
+      }
+      @keyframes dots {
+        0%   { content: ''; }
+        25%  { content: '.'; }
+        50%  { content: '..'; }
+        75%  { content: '...'; }
+        100% { content: ''; }
+      }
     </style>
   </head>
   <body>
+
+    <!-- ── Loading screen ── -->
+    <div id="loading-screen">
+      <!-- Hexagon SVG logo -->
+      <svg class="loader-logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon
+          points="32,4 58,18 58,46 32,60 6,46 6,18"
+          fill="rgba(57,255,20,0.1)"
+          stroke="#39ff14"
+          stroke-width="1.5"
+        />
+        <polygon
+          points="32,14 50,24 50,44 32,54 14,44 14,24"
+          fill="rgba(57,255,20,0.06)"
+          stroke="rgba(57,255,20,0.4)"
+          stroke-width="1"
+        />
+        <text x="32" y="36" text-anchor="middle" fill="#39ff14"
+          font-family="Courier New, monospace" font-size="13" font-weight="bold">VC</text>
+      </svg>
+
+      <div class="loader-name">Vivek Choudhary</div>
+      <div class="loader-tagline">Security Engineer · Penetration Tester</div>
+
+      <div class="loader-bar-wrap">
+        <div class="loader-bar" id="loader-bar"></div>
+      </div>
+      <div class="loader-status">
+        <span id="loader-text">Initializing</span><span class="loader-dots"></span>
+      </div>
+    </div>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <script>
+      // ── Progress bar animation ──
+      const bar = document.getElementById('loader-bar')
+      const txt = document.getElementById('loader-text')
+      const screen = document.getElementById('loading-screen')
+
+      const steps = [
+        { pct: 15, msg: 'Loading 3D engine' },
+        { pct: 35, msg: 'Building island' },
+        { pct: 55, msg: 'Placing objects' },
+        { pct: 72, msg: 'Setting up lights' },
+        { pct: 88, msg: 'Starting cameras' },
+        { pct: 100, msg: 'Ready' },
+      ]
+
+      let i = 0
+      const tick = setInterval(() => {
+        if (i >= steps.length) { clearInterval(tick); return }
+        bar.style.width = steps[i].pct + '%'
+        txt.textContent = steps[i].msg
+        i++
+      }, 400)
+
+      // Hide loading screen once React mounts
+      // We use a MutationObserver watching #root for children
+      const observer = new MutationObserver(() => {
+        if (document.getElementById('root').children.length > 0) {
+          observer.disconnect()
+          // Ensure bar hits 100% visually before fading
+          bar.style.width = '100%'
+          txt.textContent = 'Ready'
+          setTimeout(() => {
+            screen.classList.add('fade-out')
+            setTimeout(() => screen.remove(), 700)
+          }, 500)
+        }
+      })
+      observer.observe(document.getElementById('root'), { childList: true })
+    </script>
+
   </body>
 </html>

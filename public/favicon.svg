@@ -1,0 +1,11 @@
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" fill="#060d1a"/>
+  <polygon
+    points="32,4 58,18 58,46 32,60 6,46 6,18"
+    fill="rgba(57,255,20,0.15)"
+    stroke="#39ff14"
+    stroke-width="2"
+  />
+  <text x="32" y="38" text-anchor="middle" fill="#39ff14"
+    font-family="Courier New, monospace" font-size="16" font-weight="bold">VC</text>
+</svg>
