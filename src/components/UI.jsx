@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { PERSON, SKILLS, PROJECTS, SOCIALS, ABOUT } from '../content.js'
+import { useNavigate } from 'react-router-dom'
+
 
 const PANELS = {
   about:    { title: 'About Me',  icon: '◈' },
@@ -133,6 +135,7 @@ export default function UI({ isDay, onToggleDay, activePanel, onClosePanel }) {
   const [visible, setVisible] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const isMobile = useIsMobile()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (activePanel) {
@@ -193,8 +196,8 @@ export default function UI({ isDay, onToggleDay, activePanel, onClosePanel }) {
                   fontSize:12, cursor:'pointer', transition:'all 0.2s',
                 }}
                 onClick={() => {
-                  const routes = { about:'/#/about', contact:'/contact', projects:'/projects', achievements:'/achievements', resume:'/resume' }
-                  if (routes[key]) { window.location.href = routes[key]; return; }
+                  const routes = { about:'/about', contact:'/contact', projects:'/projects', achievements:'/achievements', resume:'/resume' }
+                  if (routes[key]) { navigate(routes[key]); return; }
                   activePanel === key ? onClosePanel() : onClosePanel(key)
                 }}
               >
