@@ -6,6 +6,7 @@ const PANELS = {
   projects: { title: 'Projects',  icon: '⌨' },
   skills:   { title: 'Skills',    icon: '◉' },
   contact:  { title: 'Contact',   icon: '✉' },
+  resume:   { title: 'Resume',    icon: '📄'},
 }
 
 function useIsMobile() {
@@ -191,7 +192,11 @@ export default function UI({ isDay, onToggleDay, activePanel, onClosePanel }) {
                   color: activePanel === key ? '#39ff14' : 'rgba(255,255,255,0.7)',
                   fontSize:12, cursor:'pointer', transition:'all 0.2s',
                 }}
-                onClick={() => activePanel === key ? onClosePanel() : onClosePanel(key)}
+                onClick={() => {
+                  const routes = { about:'/about', contact:'/contact', projects:'/projects', skills:'/skills', resume:'/resume' }
+                  if (routes[key]) { window.location.href = routes[key]; return; }
+                  activePanel === key ? onClosePanel() : onClosePanel(key)
+                }}
               >
                 {val.icon} {val.title}
               </button>
