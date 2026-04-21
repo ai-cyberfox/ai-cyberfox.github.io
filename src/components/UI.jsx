@@ -3,10 +3,10 @@ import { PERSON, SKILLS, PROJECTS, SOCIALS, ABOUT } from '../content.js'
 
 const PANELS = {
   about:    { title: 'About Me',  icon: '◈' },
-  projects: { title: 'Projects',  icon: '⌨' },
-  skills:   { title: 'Skills',    icon: '◉' },
-  contact:  { title: 'Contact',   icon: '✉' },
   resume:   { title: 'Resume',    icon: '📄'},
+  projects: { title: 'Projects',  icon: '⌨' },
+  achievements:   { title: 'Achievements',    icon: '◉' },
+  contact:  { title: 'Contact',   icon: '✉' },
 }
 
 function useIsMobile() {
@@ -193,7 +193,7 @@ export default function UI({ isDay, onToggleDay, activePanel, onClosePanel }) {
                   fontSize:12, cursor:'pointer', transition:'all 0.2s',
                 }}
                 onClick={() => {
-                  const routes = { about:'/about', contact:'/contact', projects:'/projects', skills:'/skills', resume:'/resume' }
+                  const routes = { about:'/about', contact:'/contact', projects:'/projects', achievements:'/achievements', resume:'/resume' }
                   if (routes[key]) { window.location.href = routes[key]; return; }
                   activePanel === key ? onClosePanel() : onClosePanel(key)
                 }}

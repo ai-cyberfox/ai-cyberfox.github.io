@@ -7,7 +7,7 @@ function SocialIcon({ type }) {
   return <span>✉</span>
 }
 
-export default function SkillsPage() {
+export default function AchievementsPage() {
   const [form, setForm] = useState({ name:'', email:'', subject:'', message:'' })
   const [sent, setSent] = useState(false)
 
