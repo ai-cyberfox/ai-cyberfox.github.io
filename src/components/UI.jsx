@@ -193,7 +193,7 @@ export default function UI({ isDay, onToggleDay, activePanel, onClosePanel }) {
                   fontSize:12, cursor:'pointer', transition:'all 0.2s',
                 }}
                 onClick={() => {
-                  const routes = { about:'/about', contact:'/contact', projects:'/projects', achievements:'/achievements', resume:'/resume' }
+                  const routes = { about:'/#/about', contact:'/contact', projects:'/projects', achievements:'/achievements', resume:'/resume' }
                   if (routes[key]) { window.location.href = routes[key]; return; }
                   activePanel === key ? onClosePanel() : onClosePanel(key)
                 }}
