@@ -332,7 +332,7 @@ function House() {
         <meshStandardMaterial
           map={(() => {
             const loader = new THREE.TextureLoader()
-            return loader.load('/badges/vivek-terminal.png')
+            return loader.load('/badges/vivek-terminal2.png')
           })()}
           transparent={true}
           alphaTest={0.05}
@@ -342,19 +342,20 @@ function House() {
         />
       </mesh>
 
-      <pointLight position={[0.2, 1.8, -0.2]} intensity={2.2} color="#ffe8c0" distance={4.0} decay={2} />
-      <pointLight position={[1.0, 1.2, 0.6]} intensity={0.6} color="#d0d8f0" distance={3.0} decay={2} />
+      {/* <pointLight position={[0.2, 1.8, -0.2]} intensity={0.2} color="#ffe8c0" distance={4.0} decay={2} />
+      <pointLight position={[1.0, 1.2, 0.6]} intensity={0.6} color="#d0d8f0" distance={3.0} decay={2} /> */}
 
       <WallPoster
         position={[0.0, 1.1, -1.32]}
         rotation={[0, Math.PI, 0]}
-        texturePath="/badges/vivek-terminal.png"
+        texturePath="/badges/vivek-terminal2.png"
         width={2.4}
         height={1.1}
       />
       {/* Glow behind the poster */}
-      <pointLight position={[0.0, 1.1, -1.5]} intensity={1.8} color="#00ccff" distance={2.5} decay={1.5} />
-      <pointLight position={[0.0, 1.1, -1.5]} intensity={1.2} color="#cc0000" distance={2.0} decay={1.5} />
+      {/* <pointLight position={[0.0, 1.1, -1.5]} intensity={0.2} color="#0188ff" distance={2.5} decay={1.5} /> */}
+      <pointLight position={[0.0, 1.1, -1.5]} intensity={4} color="#d0d8f0" distance={2} decay={0} />
+      {/* <pointLight position={[0, 0, 0]} intensity={0.4} color="#0188ff" distance={6.0} decay={9} /> */}
 
     </group>
   )
