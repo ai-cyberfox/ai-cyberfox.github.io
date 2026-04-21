@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'  // faster than babel
+import react from '@vitejs/plugin-react'
+
 
 // For a user/org site (username.github.io) the base is '/'
 // For a project site (username.github.io/repo-name) change base to '/repo-name/'
