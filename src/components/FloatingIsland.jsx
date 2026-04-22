@@ -1,32 +1,32 @@
 import { useRef, useMemo } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { RoundedBox, useGLTF, useTexture } from '@react-three/drei'
+import { RoundedBox, useGLTF, useTexture, Clone } from '@react-three/drei'
 import * as THREE from 'three'
 import gsap from 'gsap'
 
 
 // ── Palette: warm clay + dark wood like reference image ───────────────────
 const C = {
-  island:    '#d8d5e8',
+  island: '#d8d5e8',
   islandTop: '#eae7f5',
   islandBot: '#b8b5cc',
-  wall:      '#dddae8',
-  wallDk:    '#c8c4d8',
-  accent:    '#eceaf5',
-  wood:      '#8b6f3a',
-  woodDk:    '#6b4f2a',
-  roof:      '#4a5878',   // blue-grey roof like reference
-  roofDk:    '#363d55',
-  screenBg:  '#0d1117',
-  kaliBlue:  '#1a2a4a',   // Kali Linux wallpaper base
-  kaliDragon:'#2244aa',
-  termGrn:   '#39ff14',
-  fire:      '#ff8800',
-  fireYlw:   '#ffdd00',
-  keyDk:     '#1a1a2a',
-  keyMd:     '#2d2d3d',
-  social:    '#c8c4d8',
-  socDk:     '#a8a4c0',
+  wall: '#dddae8',
+  wallDk: '#c8c4d8',
+  accent: '#eceaf5',
+  wood: '#8b6f3a',
+  woodDk: '#6b4f2a',
+  roof: '#4a5878',   // blue-grey roof like reference
+  roofDk: '#363d55',
+  screenBg: '#0d1117',
+  kaliBlue: '#1a2a4a',   // Kali Linux wallpaper base
+  kaliDragon: '#2244aa',
+  termGrn: '#39ff14',
+  fire: '#ff8800',
+  fireYlw: '#ffdd00',
+  keyDk: '#1a1a2a',
+  keyMd: '#2d2d3d',
+  social: '#c8c4d8',
+  socDk: '#a8a4c0',
 }
 
 // ── Camera fly hook ────────────────────────────────────────────────────────
@@ -132,17 +132,17 @@ function CircleBadge({ position, texturePath }) {
         )
       })} */}
       {/* Outer scalloped ring — in YZ plane, facing +X */}
-      <mesh rotation={[0, 0, Math.PI/2]}>
+      <mesh rotation={[0, 0, Math.PI / 2]}>
         <torusGeometry args={[0.195, 0.195, 0.012, 6]} />
         <meshStandardMaterial color="#8b2800" roughness={0.4} metalness={0.1} />
       </mesh>
       {/* Main circular body — flat face toward +X */}
-      <mesh rotation={[0, 0, Math.PI/2]}>
+      <mesh rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[0.178, 0.178, 0.032, 6]} />
         <meshStandardMaterial color="#f0f0f0" roughness={0.3} metalness={0.05} />
       </mesh>
       {/* PNG image — faces +X into room */}
-      <mesh rotation={[0, Math.PI/2, 0]} position={[0.022, 0, 0]}>
+      <mesh rotation={[0, Math.PI / 2, 0]} position={[0.022, 0, 0]}>
         <planeGeometry args={[0.32, 0.32]} />
         <meshStandardMaterial
           map={texture}
@@ -250,7 +250,7 @@ function House() {
         <meshStandardMaterial color={C.wallDk} roughness={0.65} />
       </RoundedBox>
 
-{/* ── Achievement Wall ── */}  
+      {/* ── Achievement Wall ── */}
 
       {/* Dark backing panel */}
       {/* <mesh position={[-1.19, 1.1, -0.5]}>
@@ -273,7 +273,7 @@ function House() {
       <OscpBadge position={[-1.19, 1.55, 0.8]} />
       <CircleBadge position={[-1.19, 1.55, 0.4]} texturePath="/badges/cap.png" />
       <CircleBadge position={[-1.19, 1.55, 0]} texturePath="/badges/cnsp.png" />
-      
+
       {/* Wall light */}
       <pointLight position={[-0.9, 1.25, -0.75]} intensity={0.6} color="#ffe0cc" distance={1.2} decay={2} />
 
@@ -322,7 +322,7 @@ function House() {
         <meshStandardMaterial color={C.wallDk} roughness={0.7} />
       </mesh>
       <mesh position={[-1.2, 0.1, 0.01]}>
-        <boxGeometry args={[0.04, 0.14, 2.5]} /> 
+        <boxGeometry args={[0.04, 0.14, 2.5]} />
         <meshStandardMaterial color={C.wallDk} roughness={0.7} />
       </mesh>
 
@@ -422,10 +422,10 @@ function MouseWithCable({ position }) {
     }
     return pts
   }, [position])
- 
+
   const cableCurve = useMemo(() => new THREE.CatmullRomCurve3(cablePoints), [cablePoints])
   const cableGeom = useMemo(() => new THREE.TubeGeometry(cableCurve, 32, 0.004, 5, false), [cableCurve])
- 
+
   return (
     <group>
       {/* Mouse body — rounded oblong box style */}
@@ -439,7 +439,7 @@ function MouseWithCable({ position }) {
         <meshStandardMaterial color="#b8b4a8" roughness={0.5} />
       </mesh>
       {/* Scroll wheel */}
-      <mesh position={[position[0], position[1] + 0.033, position[2] - 0.012]} rotation={[Math.PI/2, 0, 0]}>
+      <mesh position={[position[0], position[1] + 0.033, position[2] - 0.012]} rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.008, 0.008, 0.014, 8]} />
         <meshStandardMaterial color="#888880" roughness={0.4} />
       </mesh>
@@ -453,7 +453,7 @@ function MouseWithCable({ position }) {
 
 // ── CRT Monitor helper ────────────────────────────────────────────────────
 // Big chunky old-school box monitor like in the reference image
-function CRTMonitor({ position, rotation = [0,0,0], screenColor, screenContent, width = 0.82, height = 0.62, depth = 0.52 }) {
+function CRTMonitor({ position, rotation = [0, 0, 0], screenColor, screenContent, width = 0.82, height = 0.62, depth = 0.52 }) {
   return (
     <group position={position} rotation={rotation}>
       {/* Main CRT body — deep box */}
@@ -462,56 +462,56 @@ function CRTMonitor({ position, rotation = [0,0,0], screenColor, screenContent, 
         <meshStandardMaterial color="#d4d0c4" roughness={0.65} />
       </mesh>
       {/* Front face slightly lighter */}
-      <mesh position={[0, 0, depth/2 - 0.001]}>
+      <mesh position={[0, 0, depth / 2 - 0.001]}>
         <boxGeometry args={[width, height, 0.01]} />
         <meshStandardMaterial color="#dedad0" roughness={0.6} />
       </mesh>
       {/* Screen bezel — inset */}
-      <mesh position={[0, 0.04, depth/2 + 0.005]}>
+      <mesh position={[0, 0.04, depth / 2 + 0.005]}>
         <boxGeometry args={[width * 0.82, height * 0.72, 0.018]} />
         <meshStandardMaterial color="#c8c4b8" roughness={0.5} />
       </mesh>
       {/* Screen glass — slightly convex look */}
-      <mesh position={[0, 0.04, depth/2 + 0.016]}>
+      <mesh position={[0, 0.04, depth / 2 + 0.016]}>
         <boxGeometry args={[width * 0.76, height * 0.66, 0.008]} />
         <meshStandardMaterial color={screenColor} emissive={screenColor} emissiveIntensity={0.15} roughness={0.05} transparent opacity={0.92} />
       </mesh>
       {/* Screen content */}
       {screenContent}
       {/* Bottom chin — buttons area */}
-      <mesh position={[0, -height*0.38, depth/2 + 0.006]}>
+      <mesh position={[0, -height * 0.38, depth / 2 + 0.006]}>
         <boxGeometry args={[width * 0.5, height * 0.1, 0.01]} />
         <meshStandardMaterial color="#c0bcb0" roughness={0.6} />
       </mesh>
       {/* Power button */}
-      <mesh position={[width*0.28, -height*0.38, depth/2 + 0.012]}>
+      <mesh position={[width * 0.28, -height * 0.38, depth / 2 + 0.012]}>
         <cylinderGeometry args={[0.018, 0.018, 0.012, 10]} />
         <meshStandardMaterial color="#a8a49a" roughness={0.4} />
       </mesh>
       {/* Small indicator LED */}
-      <mesh position={[width*0.28, -height*0.38 + 0.04, depth/2 + 0.012]}>
+      <mesh position={[width * 0.28, -height * 0.38 + 0.04, depth / 2 + 0.012]}>
         <sphereGeometry args={[0.006, 6, 6]} />
         <meshStandardMaterial color="#00ff44" emissive="#00ff44" emissiveIntensity={2} roughness={0.1} />
       </mesh>
       {/* Side vent lines */}
       {[0, 0.04, 0.08].map((dy, i) => (
-        <mesh key={i} position={[width/2 + 0.002, 0.1 - dy, 0]} rotation={[0, Math.PI/2, 0]}>
+        <mesh key={i} position={[width / 2 + 0.002, 0.1 - dy, 0]} rotation={[0, Math.PI / 2, 0]}>
           <boxGeometry args={[depth * 0.5, 0.008, 0.004]} />
           <meshStandardMaterial color="#c0bcb0" roughness={0.7} />
         </mesh>
       ))}
       {/* CRT neck/stand */}
-      <mesh position={[0, -height/2 - 0.04, 0]}>
+      <mesh position={[0, -height / 2 - 0.04, 0]}>
         <boxGeometry args={[width * 0.55, 0.06, depth * 0.55]} />
         <meshStandardMaterial color="#c8c4b8" roughness={0.6} />
       </mesh>
-      <mesh position={[0, -height/2 - 0.08, 0]}>
+      <mesh position={[0, -height / 2 - 0.08, 0]}>
         <boxGeometry args={[width * 0.45, 0.04, depth * 0.45]} />
         <meshStandardMaterial color="#c0bcb0" roughness={0.6} />
       </mesh>
     </group>
   )
-} 
+}
 
 
 // image wallpaper
@@ -576,7 +576,7 @@ function CRTMonitor({ position, rotation = [0,0,0], screenColor, screenContent, 
 
 
 // live typing wallpaper 
- 
+
 function KaliWallpaper() {
   const canvasTexture = useMemo(() => {
     const canvas = document.createElement('canvas')
@@ -934,9 +934,9 @@ function VerticalKaliWallpaper() {
 }
 
 // ── Desk Setup (retro reference style) ────────────────────────────────────
-function DeskSetup({ onSelect }) {
+function DeskSetup({ onSelect, onHover }) {
   return (
-    <group position={[0.1, 0.38, -1.480]} onClick={(e) => { e.stopPropagation(); onSelect('projects') }}>
+    <group position={[0.1, 0.38, -1.480]}>
 
       {/* ── Desk top — ROUNDED ── */}
       <RoundedBox args={[2.0, 0.07, 0.95]} radius={0.025} smoothness={4} position={[0, 0.7, 0.245]} castShadow>
@@ -963,8 +963,13 @@ function DeskSetup({ onSelect }) {
         <meshStandardMaterial color="#d0ccc6" roughness={0.65} />
       </RoundedBox>
 
-{/* ── MAIN HORIZONTAL MONITOR ── */}
-      <group position={[0.08, 1.08, 0.04]}>
+      {/* ── MAIN HORIZONTAL MONITOR ── */}
+      {/* ── MAIN HORIZONTAL MONITOR ── */}
+      <group position={[0.08, 1.23, 0.04]}
+        onClick={e => { e.stopPropagation(); onSelect('about') }}
+        onPointerEnter={e => { e.stopPropagation(); onHover?.('About Me', e.nativeEvent) }}
+        onPointerLeave={e => { e.stopPropagation(); onHover?.(null) }}
+      >
         {/* Slim flat body */}
         <RoundedBox args={[1.1, 0.62, 0.06]} radius={0.02} smoothness={4} castShadow>
           <meshStandardMaterial color="#222228" roughness={0.4} metalness={0.5} />
@@ -1003,8 +1008,13 @@ function DeskSetup({ onSelect }) {
       </group>
 
       {/* ── VERTICAL SIDE MONITOR ── */}
-      <group position={[-0.76, 1.08, 0.04]} rotation={[0, 0.5, Math.PI / 2]}>      
-      {/* Body — rotated 90° */}
+      {/* ── VERTICAL SIDE MONITOR ── */}
+      <group position={[-0.76, 1.23, 0.07]} rotation={[0, 0.5, Math.PI / 2]}
+        onClick={e => { e.stopPropagation(); onSelect('projects') }}
+        onPointerEnter={e => { e.stopPropagation(); onHover?.('Projects', e.nativeEvent) }}
+        onPointerLeave={e => { e.stopPropagation(); onHover?.(null) }}
+      >
+        {/* Body — rotated 90° */}
         <RoundedBox args={[0.62, 0.38, 0.055]} radius={0.018} smoothness={4} castShadow>
           <meshStandardMaterial color="#222228" roughness={0.4} metalness={0.5} />
         </RoundedBox>
@@ -1037,7 +1047,7 @@ function DeskSetup({ onSelect }) {
         <mesh position={[0, 0.28, 0]}><cylinderGeometry args={[0.014, 0.016, 0.52, 8]} /><meshStandardMaterial color="#c8c4b8" roughness={0.45} /></mesh>
         <mesh position={[-0.04, 0.56, -0.06]} rotation={[0.5, 0, -0.1]}><cylinderGeometry args={[0.012, 0.014, 0.32, 8]} /><meshStandardMaterial color="#c8c4b8" roughness={0.45} /></mesh>
         <mesh position={[-0.1, 0.72, -0.18]} rotation={[1.0, 0, 0.1]}>
-          <sphereGeometry args={[0.1, 10, 8, 0, Math.PI*2, 0, Math.PI*0.55]} />
+          <sphereGeometry args={[0.1, 10, 8, 0, Math.PI * 2, 0, Math.PI * 0.55]} />
           <meshStandardMaterial color="#dedad2" roughness={0.4} side={THREE.DoubleSide} />
         </mesh>
         <mesh position={[-0.09, 0.68, -0.18]}><sphereGeometry args={[0.028, 8, 8]} /><meshStandardMaterial color="#ffe8c0" emissive="#ffe8c0" emissiveIntensity={2.5} roughness={0.1} /></mesh>
@@ -1048,7 +1058,7 @@ function DeskSetup({ onSelect }) {
       <group position={[0.660, 0.738, 0.30]}>
         <mesh castShadow><cylinderGeometry args={[0.046, 0.040, 0.085, 14]} /><meshStandardMaterial color="#d8d4ce" roughness={0.5} /></mesh>
         <mesh position={[0, 0.038, 0]}><cylinderGeometry args={[0.042, 0.042, 0.003, 14]} /><meshStandardMaterial color="#3a1a08" roughness={0.3} /></mesh>
-        <mesh position={[0.058, 0.01, 0]} rotation={[0, 0, Math.PI/2]}><torusGeometry args={[0.024, 0.007, 6, 12, Math.PI]} /><meshStandardMaterial color="#d0ccc6" roughness={0.5} /></mesh>
+        <mesh position={[0.058, 0.01, 0]} rotation={[0, 0, Math.PI / 2]}><torusGeometry args={[0.024, 0.007, 6, 12, Math.PI]} /><meshStandardMaterial color="#d0ccc6" roughness={0.5} /></mesh>
       </group>
 
 
@@ -1090,40 +1100,29 @@ function DeskSetup({ onSelect }) {
 
 
 
-// ── Tree ──────────────────────────────────────────────────────
-function Tree({ position = [1.85,0.28,-1.25] }) {
-  const clusters = useMemo(() => [
-    [0,1.6,0,0.72],[-0.42,1.38,0.24,0.56],[0.38,1.28,-0.22,0.52],
-    [-0.22,1.78,-0.32,0.47],[0.32,1.68,0.34,0.44],[-0.52,1.08,-0.12,0.42],
-    [0.12,1.12,0.46,0.4],[0.5,1.5,0.18,0.38],[-0.18,1.22,0.5,0.35],
-  ], [])
+// ── Tree GLB model ─────────────────────────────────────────────
+function Tree({ position = [2.5, 0.28, -1.8] }) {
+  const { scene } = useGLTF('/models/tree.glb')
+
   return (
-    <group position={position}>
-      <mesh castShadow><cylinderGeometry args={[0.1,0.15,1.25,10]} /><meshStandardMaterial color={C.wood} roughness={0.92} /></mesh>
-      {[0.2,0.5,0.8].map((y,i) => (
-        <mesh key={i} position={[0,y,0]}>
-          <torusGeometry args={[0.115-y*0.02,0.012,4,12]} />
-          <meshStandardMaterial color={C.woodDark} roughness={0.95} />
-        </mesh>
-      ))}
-      <mesh position={[-0.25,0.72,0.1]} rotation={[0.2,0,0.55]} castShadow>
-        <cylinderGeometry args={[0.04,0.07,0.72,8]} />
-        <meshStandardMaterial color={C.wood} roughness={0.92} />
-      </mesh>
-      {[0,1,2,3].map(i => {
-        const a=(i/4)*Math.PI*2
-        return <mesh key={i} position={[Math.cos(a)*0.14,-0.55,Math.sin(a)*0.14]} rotation={[0,a,0.4]}><boxGeometry args={[0.06,0.08,0.22]} /><meshStandardMaterial color={C.woodDark} roughness={0.95} /></mesh>
-      })}
-      {clusters.map(([x,y,z,r],i) => (
-        <mesh key={i} position={[x,y,z]} castShadow>
-          <sphereGeometry args={[r,8,6]} />
-          {/* <meshStandardMaterial color={i%3===0?C.leaf:i%3===1?C.leafMid:C.island} roughness={1.0} flatShading /> */}
-          <meshStandardMaterial color="#0c9d7b" flatShading />
-        </mesh>
-      ))}
+    // Outer group places tree at island position
+    <group position={position}> 
+      {/*
+        Push model DOWN so base is buried in the island.
+        Adjust yOffset until base disappears — start with -0.8
+        Increase (e.g. -1.2) to bury more, decrease (e.g. -0.4) to show more trunk
+      */}
+      <Clone
+        object={scene}
+        scale={0.6}
+        position={[0, -0.1, 1]}
+        castShadow
+        receiveShadow
+      />
     </group>
   )
 }
+useGLTF.preload('/models/tree.glb')
 
 
 // ── Lantern ────────────────────────────────────────────────────────────────
@@ -1140,8 +1139,8 @@ function Lantern({ position = [-1.7, 0.28, -0.5] }) {
       </mesh>
       <group position={[0.4, 0.46, 0]}>
         {/* Glass panels */}
-        {[0,1,2,3].map(i => (
-          <mesh key={i} position={[Math.sin(i*Math.PI/2)*0.105, 0, Math.cos(i*Math.PI/2)*0.105]} rotation={[0, i*Math.PI/2, 0]}>
+        {[0, 1, 2, 3].map(i => (
+          <mesh key={i} position={[Math.sin(i * Math.PI / 2) * 0.105, 0, Math.cos(i * Math.PI / 2) * 0.105]} rotation={[0, i * Math.PI / 2, 0]}>
             <planeGeometry args={[0.19, 0.22]} />
             <meshStandardMaterial color="#ffe0a0" transparent opacity={0.3} emissive="#ffe0a0" emissiveIntensity={0.4} side={THREE.DoubleSide} />
           </mesh>
@@ -1166,61 +1165,62 @@ function Campfire({ position = [0.0, 0.28, 0.95] }) {
   const emberRef = useRef()
   useFrame(({ clock }) => {
     const t = clock.elapsedTime
-    if (fireRef.current) { fireRef.current.scale.y = 1 + Math.sin(t*7.3)*0.15; fireRef.current.scale.x = 1 + Math.sin(t*5.8)*0.09 }
-    if (innerRef.current) { innerRef.current.scale.y = 1 + Math.sin(t*9.1+1)*0.18; innerRef.current.scale.x = 1 + Math.sin(t*6.7+2)*0.11 }
+    if (fireRef.current) { fireRef.current.scale.y = 1 + Math.sin(t * 7.3) * 0.15; fireRef.current.scale.x = 1 + Math.sin(t * 5.8) * 0.09 }
+    if (innerRef.current) { innerRef.current.scale.y = 1 + Math.sin(t * 9.1 + 1) * 0.18; innerRef.current.scale.x = 1 + Math.sin(t * 6.7 + 2) * 0.11 }
     if (emberRef.current) emberRef.current.rotation.y = t * 1.5
   })
   return (
     <group position={position}>
       {/* Stone ring */}
-      {[0,1,2,3,4,5].map(i => (
-        <mesh key={i} position={[Math.cos(i/6*Math.PI*2)*0.2, 0.02, Math.sin(i/6*Math.PI*2)*0.2]}>
+      {[0, 1, 2, 3, 4, 5].map(i => (
+        <mesh key={i} position={[Math.cos(i / 6 * Math.PI * 2) * 0.2, 0.02, Math.sin(i / 6 * Math.PI * 2) * 0.2]}>
           <sphereGeometry args={[0.07, 6, 5]} />
           <meshStandardMaterial color={C.socDk} roughness={0.95} flatShading />
         </mesh>
       ))}
-      <mesh rotation={[0,0.5,Math.PI/2]} castShadow><cylinderGeometry args={[0.055,0.055,0.42,8]} /><meshStandardMaterial color={C.wood} roughness={0.95} /></mesh>
-      <mesh rotation={[0,-0.5,Math.PI/2]} castShadow><cylinderGeometry args={[0.055,0.055,0.42,8]} /><meshStandardMaterial color={C.woodDk} roughness={0.95} /></mesh>
-      <mesh rotation={[Math.PI/2,0.9,0]} castShadow><cylinderGeometry args={[0.045,0.045,0.38,8]} /><meshStandardMaterial color={C.wood} roughness={0.95} /></mesh>
-      <mesh position={[0,0.03,0]}><sphereGeometry args={[0.1,8,6]} /><meshStandardMaterial color="#1a0800" roughness={0.9} emissive="#ff4400" emissiveIntensity={0.3} /></mesh>
-      <mesh ref={fireRef} position={[0,0.22,0]}><coneGeometry args={[0.12,0.38,8]} /><meshStandardMaterial color={C.fire} emissive={C.fire} emissiveIntensity={1.5} transparent opacity={0.88} roughness={0.1} /></mesh>
-      <mesh ref={innerRef} position={[0,0.24,0]}><coneGeometry args={[0.065,0.28,8]} /><meshStandardMaterial color={C.fireYlw} emissive={C.fireYlw} emissiveIntensity={2.5} transparent opacity={0.9} roughness={0.1} /></mesh>
-      <mesh position={[0,0.38,0]}><coneGeometry args={[0.025,0.1,6]} /><meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={3} transparent opacity={0.7} roughness={0.1} /></mesh>
+      <mesh rotation={[0, 0.5, Math.PI / 2]} castShadow><cylinderGeometry args={[0.055, 0.055, 0.42, 8]} /><meshStandardMaterial color={C.wood} roughness={0.95} /></mesh>
+      <mesh rotation={[0, -0.5, Math.PI / 2]} castShadow><cylinderGeometry args={[0.055, 0.055, 0.42, 8]} /><meshStandardMaterial color={C.woodDk} roughness={0.95} /></mesh>
+      <mesh rotation={[Math.PI / 2, 0.9, 0]} castShadow><cylinderGeometry args={[0.045, 0.045, 0.38, 8]} /><meshStandardMaterial color={C.wood} roughness={0.95} /></mesh>
+      <mesh position={[0, 0.03, 0]}><sphereGeometry args={[0.1, 8, 6]} /><meshStandardMaterial color="#1a0800" roughness={0.9} emissive="#ff4400" emissiveIntensity={0.3} /></mesh>
+      <mesh ref={fireRef} position={[0, 0.22, 0]}><coneGeometry args={[0.12, 0.38, 8]} /><meshStandardMaterial color={C.fire} emissive={C.fire} emissiveIntensity={1.5} transparent opacity={0.88} roughness={0.1} /></mesh>
+      <mesh ref={innerRef} position={[0, 0.24, 0]}><coneGeometry args={[0.065, 0.28, 8]} /><meshStandardMaterial color={C.fireYlw} emissive={C.fireYlw} emissiveIntensity={2.5} transparent opacity={0.9} roughness={0.1} /></mesh>
+      <mesh position={[0, 0.38, 0]}><coneGeometry args={[0.025, 0.1, 6]} /><meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={3} transparent opacity={0.7} roughness={0.1} /></mesh>
       <group ref={emberRef}>
-        {[0,1,2].map(i => (
-          <mesh key={i} position={[Math.sin(i*2.09)*0.07, 0.08, Math.cos(i*2.09)*0.07]}>
-            <sphereGeometry args={[0.012,6,4]} />
+        {[0, 1, 2].map(i => (
+          <mesh key={i} position={[Math.sin(i * 2.09) * 0.07, 0.08, Math.cos(i * 2.09) * 0.07]}>
+            <sphereGeometry args={[0.012, 6, 4]} />
             <meshStandardMaterial color="#ff6600" emissive="#ff6600" emissiveIntensity={3} roughness={0.1} />
           </mesh>
         ))}
       </group>
-      <pointLight position={[0,0.35,0]} intensity={3.2} color="#ff8800" distance={5} decay={2} />
-      <pointLight position={[0,0.1,0]} intensity={1.5} color="#ff4400" distance={2} decay={2} />
+      <pointLight position={[0, 0.35, 0]} intensity={3.2} color="#ff8800" distance={5} decay={2} />
+      <pointLight position={[0, 0.1, 0]} intensity={1.5} color="#ff4400" distance={2} decay={2} />
     </group>
   )
 }
 
 
-
 // ── Mailbox ── click → contact ────────────────────────────────
-function Mailbox({ onSelect }) {
+function Mailbox({ onSelect, onHover }) {
   return (
     <group
-      position={[-2.05,0.28,0.45]}
+      position={[-2.05, 0.28, 0.45]}
       onClick={e => { e.stopPropagation(); onSelect('contact') }}
+      onPointerEnter={e => { e.stopPropagation(); onHover?.('Contact', e.nativeEvent) }}
+      onPointerLeave={e => { e.stopPropagation(); onHover?.(null) }}
     >
-      <mesh position={[0,0.22,0]} castShadow><boxGeometry args={[0.06,0.46,0.06]} /><meshStandardMaterial color="#8f4040" roughness={0.7} /></mesh>
-      <mesh position={[0,0,0]}><boxGeometry args={[0.15,0.04,0.15]} /><meshStandardMaterial color="#b15959" roughness={0.75} /></mesh>
-      <mesh position={[0,0.48,0]}><boxGeometry args={[0.24,0.2,0.32]} /><meshStandardMaterial color="#8f4040" roughness={0.58} /></mesh>
-      <mesh position={[0,0.59,0]}>
-        <cylinderGeometry args={[0.12,0.12,0.32,10,1,false,0,Math.PI]} />
+      <mesh position={[0, 0.22, 0]} castShadow><boxGeometry args={[0.06, 0.46, 0.06]} /><meshStandardMaterial color="#8f4040" roughness={0.7} /></mesh>
+      <mesh position={[0, 0, 0]}><boxGeometry args={[0.15, 0.04, 0.15]} /><meshStandardMaterial color="#b15959" roughness={0.75} /></mesh>
+      <mesh position={[0, 0.48, 0]}><boxGeometry args={[0.24, 0.2, 0.32]} /><meshStandardMaterial color="#8f4040" roughness={0.58} /></mesh>
+      <mesh position={[0, 0.59, 0]}>
+        <cylinderGeometry args={[0.12, 0.12, 0.32, 10, 1, false, 0, Math.PI]} />
         <meshStandardMaterial color="#b15959" roughness={0.55} side={THREE.DoubleSide} />
       </mesh>
-      <mesh position={[0.125,0.48,0]}><boxGeometry args={[0.01,0.03,0.14]} /><meshStandardMaterial color="#b15959" /></mesh>
+      <mesh position={[0.125, 0.48, 0]}><boxGeometry args={[0.01, 0.03, 0.14]} /><meshStandardMaterial color="#b15959" /></mesh>
       {/* Flag */}
-      <mesh position={[-0.12,0.56,0.14]}><boxGeometry args={[0.015,0.12,0.015]} /><meshStandardMaterial color="#b15959" /></mesh>
-      <mesh position={[-0.12,0.62,0.14]}><boxGeometry args={[0.015,0.06,0.05]} /><meshStandardMaterial color="#b15959" emissive={C.screenRed} emissiveIntensity={0.3} /></mesh>
-      <pointLight position={[0,0.55,0]} intensity={0.55} color="#aaddff" distance={2} decay={2} />
+      <mesh position={[-0.12, 0.56, 0.14]}><boxGeometry args={[0.015, 0.12, 0.015]} /><meshStandardMaterial color="#b15959" /></mesh>
+      <mesh position={[-0.12, 0.62, 0.14]}><boxGeometry args={[0.015, 0.06, 0.05]} /><meshStandardMaterial color="#b15959" emissive={C.screenRed} emissiveIntensity={0.3} /></mesh>
+      <pointLight position={[0, 0.55, 0]} intensity={0.55} color="#aaddff" distance={2} decay={2} />
     </group>
   )
 }
@@ -1465,16 +1465,18 @@ function Mailbox({ onSelect }) {
 // }
 
 // ── Skills Easel ───────────────────────────────────────────────────────────
-function ProjectCanvas({ onSelect }) {
+function ProjectCanvas({ onSelect, onHover }) {
   return (
-    <group position={[2.3, 0.28, 0.3]} rotation={[0, -0.55, 0]} onClick={(e) => { e.stopPropagation(); onSelect('skills') }}>
-      <mesh position={[-0.12, 0.62, -0.08]} rotation={[0.15,0,0.08]} castShadow><cylinderGeometry args={[0.022,0.022,1.32,8]} /><meshStandardMaterial color={C.wood} roughness={0.8} /></mesh>
-      <mesh position={[0.12, 0.62, -0.08]} rotation={[0.15,0,-0.08]} castShadow><cylinderGeometry args={[0.022,0.022,1.32,8]} /><meshStandardMaterial color={C.wood} roughness={0.8} /></mesh>
-      <mesh position={[0, 0.56, 0.15]} rotation={[-0.22,0,0]} castShadow><cylinderGeometry args={[0.018,0.018,1.12,8]} /><meshStandardMaterial color={C.woodDk} roughness={0.8} /></mesh>
+    <group position={[2.3, 0.28, 0.3]} rotation={[0, -0.55, 0]} onClick={(e) => { e.stopPropagation(); onSelect('achievements') }}
+      onPointerEnter={e => { e.stopPropagation(); onHover?.('achievements', e.nativeEvent) }}
+      onPointerLeave={e => { e.stopPropagation(); onHover?.(null) }}>
+      <mesh position={[-0.12, 0.62, -0.08]} rotation={[0.15, 0, 0.08]} castShadow><cylinderGeometry args={[0.022, 0.022, 1.32, 8]} /><meshStandardMaterial color={C.wood} roughness={0.8} /></mesh>
+      <mesh position={[0.12, 0.62, -0.08]} rotation={[0.15, 0, -0.08]} castShadow><cylinderGeometry args={[0.022, 0.022, 1.32, 8]} /><meshStandardMaterial color={C.wood} roughness={0.8} /></mesh>
+      <mesh position={[0, 0.56, 0.15]} rotation={[-0.22, 0, 0]} castShadow><cylinderGeometry args={[0.018, 0.018, 1.12, 8]} /><meshStandardMaterial color={C.woodDk} roughness={0.8} /></mesh>
       <mesh position={[0, 0.92, 0]}><boxGeometry args={[0.74, 0.56, 0.052]} /><meshStandardMaterial color={C.wall} roughness={0.4} /></mesh>
       <mesh position={[0, 0.92, 0.028]}><boxGeometry args={[0.67, 0.49, 0.01]} /><meshStandardMaterial color="#0a1a0a" roughness={0.2} /></mesh>
       {[0, 1, 2].map(i => (
-        <mesh key={i} position={[0, 0.97, 0.036]} rotation={[Math.PI/2, 0, (i/3)*Math.PI]}>
+        <mesh key={i} position={[0, 0.97, 0.036]} rotation={[Math.PI / 2, 0, (i / 3) * Math.PI]}>
           <torusGeometry args={[0.083, 0.015, 8, 24]} />
           <meshStandardMaterial color="#61dafb" emissive="#61dafb" emissiveIntensity={1.2} roughness={0.1} />
         </mesh>
@@ -1482,7 +1484,7 @@ function ProjectCanvas({ onSelect }) {
       <mesh position={[0, 0.97, 0.044]}><sphereGeometry args={[0.022, 8, 6]} /><meshStandardMaterial color="#61dafb" emissive="#61dafb" emissiveIntensity={2} roughness={0.1} /></mesh>
       {[0.78, 0.72, 0.66].map((y, i) => (
         <mesh key={i} position={[0, y, 0.037]}>
-          <boxGeometry args={[0.26-i*0.03, 0.018, 0.002]} />
+          <boxGeometry args={[0.26 - i * 0.03, 0.018, 0.002]} />
           <meshStandardMaterial color={C.termGrn} emissive={C.termGrn} emissiveIntensity={0.8} roughness={0.1} />
         </mesh>
       ))}
@@ -1497,10 +1499,10 @@ function ProjectCanvas({ onSelect }) {
 function Rocks() {
   return (
     <group>
-      {[[-1.8,0.28, 1.8,0.08],
-        [ 2.2,0.28,-2.0,0.07],[-0.5,0.28, 2.9,0.1],[ 2.8,0.28,-1.5,0.07]].map(([x,y,z,r],i) => (
-        <mesh key={i} position={[x,y,z]} castShadow>
-          <sphereGeometry args={[r,6,5]} />
+      {[[-1.8, 0.28, 1.8, 0.08],
+      [2.2, 0.28, -2.0, 0.07], [-0.5, 0.28, 2.9, 0.1], [2.8, 0.28, -1.5, 0.07]].map(([x, y, z, r], i) => (
+        <mesh key={i} position={[x, y, z]} castShadow>
+          <sphereGeometry args={[r, 6, 5]} />
           <meshStandardMaterial color={C.islandBot} roughness={0.95} flatShading />
         </mesh>
       ))}
@@ -1561,12 +1563,12 @@ function Steps() {
 // ── Plant ─────────────────────────────────────────────────────
 function Plant() {
   return (
-    <group position={[-2.3,0.28,-0.9]}>
-      <mesh castShadow><cylinderGeometry args={[0.1,0.07,0.16,10]} /><meshStandardMaterial color="#694b25" roughness={0.72} /></mesh>
-      <mesh position={[0,0.09,0]}><cylinderGeometry args={[0.096,0.096,0.03,10]} /><meshStandardMaterial color="#3a2810" roughness={0.95} /></mesh>
-      <mesh position={[0,0.24,0]}><cylinderGeometry args={[0.016,0.016,0.22,6]} /><meshStandardMaterial color="#5a8a2a" roughness={0.85} /></mesh>
-      {[[0,0.35,0,0.14],[0.08,0.32,0.06,0.11],[-0.08,0.34,-0.05,0.1],[0.04,0.38,-0.07,0.09]].map(([x,y,z,r],i) => (
-        <mesh key={i} position={[x,y,z]}><sphereGeometry args={[r,7,6]} /><meshStandardMaterial color="#709907" roughness={0.9} flatShading /></mesh>
+    <group position={[-2.3, 0.28, -0.9]}>
+      <mesh castShadow><cylinderGeometry args={[0.1, 0.07, 0.16, 10]} /><meshStandardMaterial color="#694b25" roughness={0.72} /></mesh>
+      <mesh position={[0, 0.09, 0]}><cylinderGeometry args={[0.096, 0.096, 0.03, 10]} /><meshStandardMaterial color="#3a2810" roughness={0.95} /></mesh>
+      <mesh position={[0, 0.24, 0]}><cylinderGeometry args={[0.016, 0.016, 0.22, 6]} /><meshStandardMaterial color="#5a8a2a" roughness={0.85} /></mesh>
+      {[[0, 0.35, 0, 0.14], [0.08, 0.32, 0.06, 0.11], [-0.08, 0.34, -0.05, 0.1], [0.04, 0.38, -0.07, 0.09]].map(([x, y, z, r], i) => (
+        <mesh key={i} position={[x, y, z]}><sphereGeometry args={[r, 7, 6]} /><meshStandardMaterial color="#709907" roughness={0.9} flatShading /></mesh>
       ))}
     </group>
   )
@@ -1577,8 +1579,8 @@ function Plant() {
 function BreathingLight({ y1, y2 }) {
   const light1Ref = useRef()
   const light2Ref = useRef()
-  const matRef    = useRef()
-  const pointRef  = useRef()
+  const matRef = useRef()
+  const pointRef = useRef()
 
   useFrame(({ clock }) => {
     const t = clock.elapsedTime
@@ -1657,7 +1659,7 @@ function TelephoneTower() {
   function LatticeSection({ y, topW, botW, height, white = false }) {
     const color = white ? '#dddddd' : '#cc2200'
     const hw = white ? '#eeeeee' : '#dd3300'
-    const corners = [[ 1,  1], [-1,  1], [ 1, -1], [-1, -1]]
+    const corners = [[1, 1], [-1, 1], [1, -1], [-1, -1]]
     return (
       <group position={[0, y, 0]}>
         {/* Corner legs */}
@@ -1666,11 +1668,11 @@ function TelephoneTower() {
           const tx = sx * topW, tz = sz * topW
           const mx = (bx + tx) / 2, mz = (bz + tz) / 2
           const dx = tx - bx, dz = tz - bz
-          const len = Math.sqrt(dx*dx + height*height + dz*dz)
+          const len = Math.sqrt(dx * dx + height * height + dz * dz)
           const rotZ = Math.atan2(-dx, height)
           const rotX = Math.atan2(dz, height)
           return (
-            <mesh key={i} position={[mx, height/2, mz]}
+            <mesh key={i} position={[mx, height / 2, mz]}
               rotation={[rotX, 0, rotZ]} castShadow>
               <cylinderGeometry args={[0.018, 0.022, len, 6]} />
               <meshStandardMaterial color={color} roughness={0.5} metalness={0.4} />
@@ -1683,9 +1685,9 @@ function TelephoneTower() {
           const x2 = topW, z2 = topW * dir * -1
           const mx = (x1 + x2) / 2, mz = (z1 + z2) / 2
           const dx = x2 - x1, dz = z2 - z1
-          const len = Math.sqrt(dx*dx + height*height + dz*dz)
+          const len = Math.sqrt(dx * dx + height * height + dz * dz)
           return (
-            <mesh key={i} position={[mx, height/2, mz]}
+            <mesh key={i} position={[mx, height / 2, mz]}
               rotation={[Math.atan2(dz, height), 0, Math.atan2(-dx, height)]} castShadow>
               <cylinderGeometry args={[0.012, 0.012, len, 5]} />
               <meshStandardMaterial color={hw} roughness={0.5} metalness={0.3} />
@@ -1698,9 +1700,9 @@ function TelephoneTower() {
           const x2 = topW * dir * -1, z2 = topW
           const mx = (x1 + x2) / 2, mz = (z1 + z2) / 2
           const dx = x2 - x1, dz = z2 - z1
-          const len = Math.sqrt(dx*dx + height*height + dz*dz)
+          const len = Math.sqrt(dx * dx + height * height + dz * dz)
           return (
-            <mesh key={i} position={[mx, height/2, mz]}
+            <mesh key={i} position={[mx, height / 2, mz]}
               rotation={[Math.atan2(dz, height), 0, Math.atan2(-dx, height)]} castShadow>
               <cylinderGeometry args={[0.012, 0.012, len, 5]} />
               <meshStandardMaterial color={hw} roughness={0.5} metalness={0.3} />
@@ -1708,12 +1710,12 @@ function TelephoneTower() {
           )
         })}
         {/* Horizontal ring at bottom */}
-        <mesh position={[0, 0.01, 0]} rotation={[Math.PI/2, 0, Math.PI/4]}>
+        <mesh position={[0, 0.01, 0]} rotation={[Math.PI / 2, 0, Math.PI / 4]}>
           <torusGeometry args={[botW * 1.38, 0.013, 6, 4]} />
           <meshStandardMaterial color={color} roughness={0.5} metalness={0.4} />
         </mesh>
         {/* Horizontal ring at top */}
-        <mesh position={[0, height - 0.01, 0]} rotation={[Math.PI/2, 0, Math.PI/4]}>
+        <mesh position={[0, height - 0.01, 0]} rotation={[Math.PI / 2, 0, Math.PI / 4]}>
           <torusGeometry args={[topW * 1.38, 0.013, 6, 4]} />
           <meshStandardMaterial color={color} roughness={0.5} metalness={0.4} />
         </mesh>
@@ -1725,10 +1727,10 @@ function TelephoneTower() {
     <group position={[-0.5, 1.68, -2.8]}>
 
       {/* ══ LATTICE BASE — alternating red/white ══ */}
-      <LatticeSection y={-1.6}  botW={0.40} topW={0.30} height={0.55} white={false} />
-      <LatticeSection y={-1.05} botW={0.30} topW={0.22} height={0.50} white={true}  />
+      <LatticeSection y={-1.6} botW={0.40} topW={0.30} height={0.55} white={false} />
+      <LatticeSection y={-1.05} botW={0.30} topW={0.22} height={0.50} white={true} />
       <LatticeSection y={-0.55} botW={0.22} topW={0.14} height={0.45} white={false} />
-      <LatticeSection y={-0.1}  botW={0.14} topW={0.06} height={0.40} white={true}  />
+      <LatticeSection y={-0.1} botW={0.14} topW={0.06} height={0.40} white={true} />
 
       {/* ══ MAIN SHAFT ══ */}
       <mesh position={[0, 0.8, 0]} castShadow>
@@ -1802,15 +1804,15 @@ function TelephoneTower() {
 
       {/* ══ MICROWAVE DISH ══ */}
       <group position={[-0.26, 0.18, 0.0]} rotation={[0, -0.3, 0]}>
-        <mesh castShadow rotation={[0, Math.PI/2, 0]}>
-          <sphereGeometry args={[0.11, 10, 8, 0, Math.PI*2, 0, Math.PI/2]} />
+        <mesh castShadow rotation={[0, Math.PI / 2, 0]}>
+          <sphereGeometry args={[0.11, 10, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
           <meshStandardMaterial color="#c8ccd8" roughness={0.3} metalness={0.4} side={THREE.DoubleSide} />
         </mesh>
-        <mesh rotation={[0, Math.PI/2, 0]}>
+        <mesh rotation={[0, Math.PI / 2, 0]}>
           <torusGeometry args={[0.11, 0.007, 6, 20]} />
           <meshStandardMaterial color="#888899" roughness={0.4} metalness={0.5} />
         </mesh>
-        <mesh position={[0.07, 0, 0]} rotation={[0, 0, Math.PI/2]}>
+        <mesh position={[0.07, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
           <cylinderGeometry args={[0.013, 0.018, 0.09, 8]} />
           <meshStandardMaterial color="#666677" roughness={0.4} metalness={0.5} />
         </mesh>
@@ -1852,7 +1854,7 @@ function FencePosts() {
   // Arc from ~160° to ~280° (front-left to back-left edge)
   const NUM_POSTS = 4
   const START_ANGLE = (160 * Math.PI) / 180
-  const END_ANGLE   = (200 * Math.PI) / 180
+  const END_ANGLE = (200 * Math.PI) / 180
 
   const posts = Array.from({ length: NUM_POSTS }, (_, i) => {
     const t = i / (NUM_POSTS - 1)
@@ -1900,7 +1902,7 @@ function FencePosts() {
 }
 
 // ── Main Scene ─────────────────────────────────────────────────────────────
-function FloatingIslandScene({ onSelect }) {
+function FloatingIslandScene({ onSelect, onHover }) {
   const groupRef = useRef()
   useFrame(({ clock }) => {
     if (groupRef.current) {
@@ -1915,15 +1917,15 @@ function FloatingIslandScene({ onSelect }) {
       <House />
       <KaliDragon />
       <Steps />
-      <DeskSetup onSelect={onSelect} />
+      <DeskSetup onSelect={onSelect} onHover={onHover} />
       {/* Chair REMOVED as requested */}
       <Tree position={[2.5, 0.28, -1.8]} />
       {/* <Tree position={[-1.5, 0.28, -1.9]} /> */}
       <Lantern position={[-1.7, 0.28, -0.5]} />
       <Campfire position={[1.75, 0.28, 1.75]} />
-      <Mailbox onSelect={onSelect} />
+      <Mailbox onSelect={onSelect} onHover={onHover} />
       {/* <WelcomeSign onSelect={onSelect} /> */}
-      <ProjectCanvas onSelect={onSelect} />
+      <ProjectCanvas onSelect={onSelect} onHover={onHover} />
       {/* <SocialBadges onSelect={onSelect} /> */}
       {/* <SmallPlant position={[-2.4, 0.28, -1.8]} />
       <SmallPlant position={[ 2.6, 0.28, -0.6]} />
